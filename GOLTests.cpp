@@ -76,4 +76,12 @@ TEST_F(GOLTests, ConstructingGridFromPatternShouldWork) {
 
     auto pendingGrid = blockGrid.getPendingGrid();
     EXPECT_TRUE(!pendingGrid.empty());
+
+    auto newGrid = blockGrid.compute();
+    EXPECT_TRUE(!newGrid.empty());
+    auto allAlive = true;
+    for (const auto& cell : newGrid) {
+        allAlive = allAlive && cell.isAlive();
+    }
+    EXPECT_TRUE(allAlive);
 }

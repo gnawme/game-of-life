@@ -1,8 +1,10 @@
 /// \file ConwayGrid.cpp
 #include "ConwayGrid.h"
+#include "GOLFile.h"
 
 #include <algorithm>
 #include <iostream>
+#include <vector>
 
 namespace gol {
 
@@ -15,6 +17,7 @@ ConwayGrid::ConwayGrid(int width, int height, bool wrapped)
         }
     }
 
+    m_snapshot.reserve(m_width * m_height);
     copyPendingToSnapshot();
 }
 
@@ -26,13 +29,14 @@ ConwayGrid::ConwayGrid(const PatternArray& patternArray, bool wrapped)
     for (const auto& patternRow : patternArray) {
         auto cellY = 0;
         for (const auto& patternCol : patternRow) {
-            bool isAlive = (patternCol == '0' ? true : false);
+            bool isAlive = patternCol == PTEXT_LIVE;
             m_pending.push_back({cellX, cellY, m_width, m_height, isAlive, m_wrapped});
             ++cellY;
         }
         ++cellX;
     }
 
+    m_snapshot.reserve(m_width * m_height);
     copyPendingToSnapshot();
 }
 
@@ -57,6 +61,6 @@ CellArray ConwayGrid::getPendingGrid() const {
 
 /// \note PRIVATE
 void ConwayGrid::copyPendingToSnapshot() {
-    std::copy(m_pending.begin(), m_pending.end(), m_snapshot.begin());
+    m_snapshot = m_pending;
 }
 }  // namespace gol
