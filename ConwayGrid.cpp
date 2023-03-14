@@ -2,10 +2,6 @@
 #include "ConwayGrid.h"
 #include "GOLFile.h"
 
-#include <algorithm>
-#include <iostream>
-#include <vector>
-
 namespace gol {
 
 ///

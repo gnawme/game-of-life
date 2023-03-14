@@ -33,6 +33,7 @@ Checks: >
     readability-container-size-empty,
     readability-delete-null-pointer,
     readability-duplicate-include,
+    readability-identifier-naming,
     readability-redundant-declaration,
     readability-redundant-smartptr-get,
     readability-redundant-string-cstr,

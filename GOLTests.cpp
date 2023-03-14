@@ -4,9 +4,6 @@
 
 #include <gtest/gtest.h>
 
-#include <iostream>
-#include <vector>
-
 using namespace gol;
 
 struct GOLTests : public ::testing::Test {
