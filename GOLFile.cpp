@@ -7,7 +7,56 @@
 namespace gol {
 
 ///
-PatternArray readPlaintextPatternFile(const char* filename) {
+GOLFile::GOLFile(const char* filename)
+        : m_filename(filename), m_extension(getExtension({filename})) {}
+
+///
+GOLFile::GOLFile(const std::string& filename)
+        : m_filename(filename), m_extension(getExtension(filename)) {}
+
+///
+std::string GOLFile::getFilename() const {
+    return m_filename;
+}
+
+///
+PatternArray GOLFile::getPatternArray() {
+
+    if (m_extension == CELLS) {
+        return readPlaintextPatternFile(m_filename);
+    } else {
+        return readRLEPatternFile(m_filename);
+    }
+}
+
+///
+PatternArray GOLFile::readPatternFile(const char* filename) {
+    m_filename = {filename};
+    m_extension = getExtension(m_filename);
+
+    return getPatternArray();
+}
+
+///
+PatternArray GOLFile::readPatternFile(const std::string& filename) {
+    m_filename = filename;
+    m_extension = getExtension(m_filename);
+
+    return getPatternArray();
+}
+
+/// \note PRIVATE
+std::string GOLFile::getExtension(const std::string& patternFileName) {
+    auto dot = patternFileName.find_last_of('.');
+    if (dot != std::string::npos) {
+        return {patternFileName.substr(dot + 1)};
+    }
+
+    return {};
+}
+
+/// \note PRIVATE
+PatternArray GOLFile::readPlaintextPatternFile(const std::string& filename) {
     constexpr char DELIM{'!'};
 
     std::ifstream pattern(filename);
@@ -27,6 +76,11 @@ PatternArray readPlaintextPatternFile(const char* filename) {
         return grid;
     }
 
+    return {};
+}
+
+/// \note PRIVATE
+PatternArray GOLFile::readRLEPatternFile(const std::string& filename) {
     return {};
 }
 }  // namespace gol

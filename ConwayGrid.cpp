@@ -51,6 +51,16 @@ CellArray ConwayGrid::compute() {
 }
 
 ///
+int ConwayGrid::getGridHeight() const {
+    return m_height;
+}
+
+///
+int ConwayGrid::getGridWidth() const {
+    return m_width;
+}
+
+///
 CellArray ConwayGrid::getPendingGrid() const {
     return m_pending;
 }

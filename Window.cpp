@@ -1,5 +1,7 @@
+/// \file Window.cpp
 #include "Window.h"
 
+namespace gol {
 ///
 Window::Window() {
     m_window.setFramerateLimit(60);
@@ -50,8 +52,8 @@ bool Window::isFullscreen() const {
 }
 
 ///
-void Window::draw(sf::Drawable& l_drawable) {
-    m_window.draw(l_drawable);
+void Window::draw(sf::Drawable& drawable) {
+    m_window.draw(drawable);
 }
 
 ///
@@ -77,3 +79,4 @@ void Window::update() {
         }
     }
 }
+}  // namespace gol

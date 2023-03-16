@@ -1,16 +1,12 @@
 #include "GameOfLife.h"
 
+namespace gol {
 ///
-GameOfLife::GameOfLife() : m_window("Chapter 2", {800, 600}) {
+GameOfLife::GameOfLife(std::string_view pattern, ConwayGrid grid) : m_window(pattern, GOL_WINDOW_SIZE), m_conwayGrid(std::move(grid)) {
     restartClock();
-    srand(time(nullptr));
 
-    // Setting up class members.
-    auto loaded = m_mushroomTexture.loadFromFile("Mushroom.png");
-    if (loaded) {
-        m_mushroom.setTexture(m_mushroomTexture);
-        m_increment = {400, 400};
-    }
+    m_conwayCells.push_back(genLifeCell(m_window.getWindowSize(), GOL_CELL_SIZE));
+
 }
 
 ///
@@ -39,34 +35,24 @@ void GameOfLife::handleInput() {
 ///
 void GameOfLife::update() {
     m_window.update();
-    MoveMushroom();
-}
-
-///
-void GameOfLife::MoveMushroom() {
-    sf::Vector2u l_windSize = m_window.getWindowSize();
-    sf::Vector2u l_textSize = m_mushroomTexture.getSize();
-
-    if ((m_mushroom.getPosition().x > l_windSize.x - l_textSize.x && m_increment.x > 0)
-        || (m_mushroom.getPosition().x < 0 && m_increment.x < 0)) {
-        m_increment.x = -m_increment.x;
-    }
-
-    if ((m_mushroom.getPosition().y > l_windSize.y - l_textSize.y && m_increment.y > 0)
-        || (m_mushroom.getPosition().y < 0 && m_increment.y < 0)) {
-        m_increment.y = -m_increment.y;
-    }
-
-    float fElapsed = m_elapsed.asSeconds();
-
-    m_mushroom.setPosition(
-            {m_mushroom.getPosition().x + (m_increment.x * fElapsed),
-             m_mushroom.getPosition().y + (m_increment.y * fElapsed)});
 }
 
 ///
 void GameOfLife::render() {
-    m_window.beginDraw();  // Clear.
-    m_window.draw(m_mushroom);
-    m_window.endDraw();  // Display.
+    m_window.beginDraw();
+    for (auto& cell : m_conwayCells) {
+        m_window.draw(cell);
+    }
+    m_window.endDraw();
 }
+
+/// \note PRIVATE
+sf::RectangleShape GameOfLife::genLifeCell(const sf::Vector2u& windowSize, const sf::Vector2f& cellSize) {
+    sf::RectangleShape cell(cellSize);
+    cell.setOrigin({0.5f * cell.getSize().x, 0.5f * cell.getSize().y});
+    cell.setFillColor(COLOR_DORMANT);
+
+    return cell;
+}
+
+}  // namespace gol

@@ -8,10 +8,11 @@ using namespace gol;
 
 struct GOLTests : public ::testing::Test {
     void SetUp() override {
-        myBlockPattern = readPlaintextPatternFile("../block.cells");
+        myPatternArray = myGOLFile.readPatternFile("../block.cells");
     }
 
-    PatternArray myBlockPattern;
+    GOLFile myGOLFile;
+    PatternArray myPatternArray;
 
     static constexpr int CELL_X{1};
     static constexpr int CELL_Y{1};
@@ -63,13 +64,13 @@ TEST_F(GOLTests, NeighborhoodOfWrappedCornerCellsShouldBe8) {
 
 ///
 TEST_F(GOLTests, ReadingPlaintextBlockShouldReturn2x2) {
-    EXPECT_EQ(myBlockPattern.size(), 2);
-    EXPECT_EQ(myBlockPattern[0].size(), 2);
+    EXPECT_EQ(myPatternArray.size(), 2);
+    EXPECT_EQ(myPatternArray[0].size(), 2);
 }
 
 ///
 TEST_F(GOLTests, ConstructingGridFromPatternShouldWork) {
-    auto blockGrid = ConwayGrid(myBlockPattern);
+    auto blockGrid = ConwayGrid(myPatternArray);
 
     auto pendingGrid = blockGrid.getPendingGrid();
     EXPECT_TRUE(!pendingGrid.empty());

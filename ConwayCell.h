@@ -8,7 +8,7 @@
 
 namespace gol {
 
-enum CellPending { CELL_DORMANT, CELL_LONELY, CELL_LIVING, CELL_CHOKED, CELL_REBORN };
+enum CellPending { CELL_DORMANT, CELL_LONELY, CELL_CHOKED, CELL_LIVING, CELL_REBORN };
 
 class ConwayCell {
 public:

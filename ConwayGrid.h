@@ -16,6 +16,8 @@ public:
 
     CellArray compute();
 
+    int getGridHeight() const;
+    int getGridWidth() const;
     CellArray getPendingGrid() const;
 
 private:

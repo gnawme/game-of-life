@@ -1,9 +1,11 @@
+/// \file Window.h
 #pragma once
 #include <SFML/Graphics.hpp>
 #include <SFML/Window.hpp>
 
 #include <string>
 
+namespace gol {
 class Window {
 public:
     Window();
@@ -33,3 +35,4 @@ private:
     bool m_isDone{false};
     bool m_isFullscreen{false};
 };
+}  // namespace gol
