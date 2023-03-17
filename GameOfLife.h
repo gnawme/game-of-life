@@ -35,11 +35,25 @@ public:
     void restartClock();
 
 private:
-    sf::RectangleShape genLifeCell(const sf::Vector2u& windowSize, const sf::Vector2f& cellSize);
+    void generateGrid();
+
+    sf::RectangleShape genLifeCell(
+            const ConwayCell& currentCell,
+            const sf::Vector2f& windowSize,
+            const sf::Vector2f& cellSize);
+
+    void updateGrid();
+
     Window m_window{};
     sf::Clock m_clock{};
     sf::Time m_elapsed{};
     ConwayCellVector m_conwayCells;
     ConwayGrid m_conwayGrid;
+    std::unordered_map<CellPending, sf::Color> m_cellColors{
+            {CELL_DORMANT, COLOR_DORMANT},
+            {CELL_LONELY, COLOR_LONELY},
+            {CELL_CHOKED, COLOR_CHOKED},
+            {CELL_LIVING, COLOR_LIVING},
+            {CELL_REBORN, COLOR_REBORN}};
 };
 }  // namespace gol

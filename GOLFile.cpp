@@ -1,6 +1,8 @@
 /// \file GOLFile.cpp
 #include "GOLFile.h"
 
+#include <algorithm>
+#include <cctype>
 #include <fstream>
 #include <string>
 
@@ -69,6 +71,7 @@ PatternArray GOLFile::readPlaintextPatternFile(const std::string& filename) {
             }
 
             if (!line.empty()) {
+                line.erase(std::remove_if(line.begin(), line.end(), ::isspace), line.end());
                 grid.push_back(line);
             }
         }

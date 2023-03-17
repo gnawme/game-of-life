@@ -4,11 +4,19 @@
 #include "MooreNeighbor.h"
 
 #include <algorithm>
+#include <iostream>
+#include <unordered_map>
 #include <vector>
 
 namespace gol {
 
 enum CellPending { CELL_DORMANT, CELL_LONELY, CELL_CHOKED, CELL_LIVING, CELL_REBORN };
+static std::unordered_map<CellPending, std::string> PENDING_STATE{
+        {CELL_DORMANT, "CELL_DORMANT"},
+        {CELL_LONELY, "CELL_LONELY"},
+        {CELL_CHOKED, "CELL_CHOKED"},
+        {CELL_LIVING, "CELL_LIVING"},
+        {CELL_REBORN, "CELL_REBORN"}};
 
 class ConwayCell {
 public:
@@ -61,16 +69,24 @@ private:
 
         if (numAlive == 3) {
             pendingState = m_isAlive ? CELL_LIVING : CELL_REBORN;
+            std::cout << numAlive << " live neighbors, pending state "
+                      << PENDING_STATE[pendingState] << std::endl;
         } else if (numAlive >= 4 && numAlive <= 8) {
             if (m_isAlive) {
                 m_isAlive = false;
                 pendingState = CELL_CHOKED;
             }
+            std::cout << numAlive << " live neighbors, pending state "
+                      << PENDING_STATE[pendingState] << std::endl;
         } else if (numAlive == 2 && m_isAlive) {
             pendingState = CELL_LIVING;
+            std::cout << numAlive << " live neighbors, pending state "
+                      << PENDING_STATE[pendingState] << std::endl;
         } else if (numAlive <= 1 && m_isAlive) {
             m_isAlive = false;
             pendingState = CELL_LONELY;
+            std::cout << numAlive << " live neighbors, pending state "
+                      << PENDING_STATE[pendingState] << std::endl;
         }
 
         return pendingState;

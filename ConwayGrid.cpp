@@ -2,6 +2,8 @@
 #include "ConwayGrid.h"
 #include "GOLFile.h"
 
+#include <algorithm>
+
 namespace gol {
 
 ///
@@ -9,7 +11,7 @@ ConwayGrid::ConwayGrid(int width, int height, bool wrapped)
         : m_width(width), m_height(height), m_wrapped(wrapped) {
     for (auto row = 0; row < m_width; ++row) {
         for (auto col = 0; col < m_height; ++col) {
-            m_pending.push_back({row, col, m_width, m_height, m_wrapped});
+            m_pending.emplace_back(row, col, m_width, m_height, m_wrapped);
         }
     }
 
@@ -26,7 +28,7 @@ ConwayGrid::ConwayGrid(const PatternArray& patternArray, bool wrapped)
         auto cellY = 0;
         for (const auto& patternCol : patternRow) {
             bool isAlive = patternCol == PTEXT_LIVE;
-            m_pending.push_back({cellX, cellY, m_width, m_height, isAlive, m_wrapped});
+            m_pending.emplace_back(cellX, cellY, m_width, m_height, isAlive, m_wrapped);
             ++cellY;
         }
         ++cellX;
