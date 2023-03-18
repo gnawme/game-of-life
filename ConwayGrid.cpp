@@ -20,11 +20,18 @@ ConwayGrid::ConwayGrid(int width, int height, bool wrapped)
 }
 
 ///
-ConwayGrid::ConwayGrid(const PatternArray& patternArray, bool wrapped)
-        : m_width(patternArray[0].size()), m_height(patternArray.size()), m_wrapped(wrapped) {
+ConwayGrid::ConwayGrid(PatternArray patternArray, bool wrapped)
+        : m_patternArray(std::move(patternArray))
+        , m_width(patternArray[0].length())
+        , m_height(patternArray.size())
+        , m_wrapped(wrapped) {
+
+    if (m_width != m_height) {
+        squareConwayGrid();
+    }
 
     auto cellX = 0;
-    for (const auto& patternRow : patternArray) {
+    for (const auto& patternRow : m_patternArray) {
         auto cellY = 0;
         for (const auto& patternCol : patternRow) {
             bool isAlive = patternCol == PTEXT_LIVE;
@@ -69,6 +76,36 @@ CellArray ConwayGrid::getPendingGrid() const {
 
 /// \note PRIVATE
 void ConwayGrid::copyPendingToSnapshot() {
-    m_snapshot = m_pending;
+    m_snapshot.clear();
+    std::copy(m_pending.begin(), m_pending.end(), std::back_inserter(m_snapshot));
+}
+
+/// \note PRIVATE
+void ConwayGrid::squareConwayGrid() {
+    auto diff = m_width - m_height;
+
+    if (diff > 0) {
+        std::string deadRow(m_patternArray[0].length(), PTEXT_DEAD);
+        for (auto i = 1; i < diff + 1; ++i) {
+            if (i % 2 == 0) {
+                m_patternArray.push_back(deadRow);
+            } else {
+                m_patternArray.insert(m_patternArray.begin(), deadRow);
+            }
+        }
+        m_height = m_width;
+    } else {
+        for (auto& padme : m_patternArray) {
+            auto wdiff = -diff;
+            for (auto i = 1; i < wdiff + 1; ++i) {
+                if (i % 2 == 0) {
+                    padme.push_back(PTEXT_DEAD);
+                } else {
+                    padme.insert(0, 1, PTEXT_DEAD);
+                }
+            }
+        }
+        m_width = m_height;
+    }
 }
 }  // namespace gol

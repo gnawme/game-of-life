@@ -8,7 +8,6 @@ namespace gol {
 GameOfLife::GameOfLife(std::string_view pattern, ConwayGrid grid)
         : m_window(pattern, GOL_WINDOW_SIZE), m_conwayGrid(std::move(grid)) {
     restartClock();
-
     generateGrid();
 }
 
@@ -17,7 +16,7 @@ GameOfLife::~GameOfLife() = default;
 
 ///
 sf::Time GameOfLife::getElapsed() {
-    return m_elapsed;
+    return m_clock.getElapsedTime();
 }
 
 ///
@@ -77,8 +76,10 @@ void GameOfLife::generateGrid() {
 }
 
 /// \note PRIVATE
-sf::RectangleShape
-GameOfLife::genLifeCell(const ConwayCell& currentCell, const sf::Vector2f& centroid, const sf::Vector2f& cellSize) {
+sf::RectangleShape GameOfLife::genLifeCell(
+        const ConwayCell& currentCell,
+        const sf::Vector2f& centroid,
+        const sf::Vector2f& cellSize) {
     sf::RectangleShape cell(cellSize);
     cell.setOrigin({0.5f * cellSize.x, 0.5f * cellSize.y});
     cell.setPosition(centroid);
@@ -95,9 +96,6 @@ void GameOfLife::updateGrid() {
     auto gridit = m_conwayCells.begin();
     for (auto& cell : cells) {
         auto pendingState = cell.getPendingState();
-
-        std::cout << "Cell is alive: " << std::boolalpha << cell.isAlive() << std::endl;
-        std::cout << "Setting fill color " << PENDING_STATE[pendingState] << std::endl;
         gridit->setFillColor(m_cellColors[pendingState]);
         ++gridit;
     }

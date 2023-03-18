@@ -1,7 +1,7 @@
 /// \file main.cpp
 #include "ConwayGrid.h"
-#include "GameOfLife.h"
 #include "GOLFile.h"
+#include "GameOfLife.h"
 
 #include <iostream>
 
@@ -23,14 +23,15 @@ int main(int argc, char** argv) {
     ConwayGrid conwayGrid(patternArray);
     GameOfLife game(patternName, conwayGrid);
 
-    while (!game.getWindow()->isDone())
-    {
+    auto counter = 0ul;
+    while (!game.getWindow()->isDone()) {
         // Game loop.
         game.handleInput();
         game.update();
         game.render();
         auto elapsed = game.getElapsed();
         if (elapsed.asSeconds() >= 1.0) {
+            std::cout << ++counter << std::endl;
             game.restartClock();
         }
     }
