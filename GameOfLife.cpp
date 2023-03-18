@@ -20,8 +20,13 @@ sf::Time GameOfLife::getElapsed() {
 }
 
 ///
+void GameOfLife::resetClock() {
+    m_elapsed -= sf::seconds(GAME_INTERVAL);
+}
+
+///
 void GameOfLife::restartClock() {
-    m_elapsed = m_clock.restart();
+    m_elapsed += m_clock.restart();
 }
 
 ///

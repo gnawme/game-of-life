@@ -19,6 +19,8 @@ constexpr sf::Color COLOR_CHOKED{0xbc5090ff};
 constexpr sf::Color COLOR_LIVING{0xff6361ff};
 constexpr sf::Color COLOR_REBORN{0xffa600ff};
 
+constexpr float GAME_INTERVAL{1.0};
+
 ///
 class GameOfLife {
 public:
@@ -32,6 +34,7 @@ public:
     Window* getWindow();
 
     sf::Time getElapsed();
+    void resetClock();
     void restartClock();
 
 private:
@@ -39,7 +42,7 @@ private:
 
     sf::RectangleShape genLifeCell(
             const ConwayCell& currentCell,
-            const sf::Vector2f& windowSize,
+            const sf::Vector2f& centroid,
             const sf::Vector2f& cellSize);
 
     void updateGrid();

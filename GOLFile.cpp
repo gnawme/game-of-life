@@ -84,6 +84,7 @@ PatternArray GOLFile::readPlaintextPatternFile(const std::string& filename) {
 
 /// \note PRIVATE
 PatternArray GOLFile::readRLEPatternFile(const std::string& filename) {
+    std::ifstream pattern(filename);
     return {};
 }
 }  // namespace gol
