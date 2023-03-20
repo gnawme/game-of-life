@@ -51,15 +51,15 @@ public:
 
     ///
     bool computeNextState(const CellArray& snapshot) {
-        auto numAlive = 0;
+        auto numLivingNeighbors = 0;
         for (const auto& [i, j] : m_neighbors) {
             auto index = i * m_gridW + j;
             if (snapshot[index].m_isAlive) {
-                ++numAlive;
+                ++numLivingNeighbors;
             }
         }
 
-        m_cellPending = setPendingState(numAlive);
+        m_cellPending = setPendingState(numLivingNeighbors);
         return m_isAlive;
     }
 
@@ -85,29 +85,36 @@ public:
 
 private:
     ///
-    CellPending setPendingState(int numAlive) {
+    CellPending setPendingState(int numLivingNeighbors) {
         CellPending pendingState = CELL_DORMANT;
 
-        if (numAlive == 3) {
-            pendingState = m_isAlive ? CELL_LIVING : CELL_REBORN;
-            std::cout << numAlive << " live neighbors, pending state "
-                      << PENDING_STATE[pendingState] << std::endl;
-        } else if (numAlive >= 4 && numAlive <= 8) {
-            if (m_isAlive) {
-                m_isAlive = false;
-                pendingState = CELL_CHOKED;
-            }
-            std::cout << numAlive << " live neighbors, pending state "
-                      << PENDING_STATE[pendingState] << std::endl;
-        } else if (numAlive == 2 && m_isAlive) {
-            pendingState = CELL_LIVING;
-            std::cout << numAlive << " live neighbors, pending state "
-                      << PENDING_STATE[pendingState] << std::endl;
-        } else if (numAlive <= 1 && m_isAlive) {
+        switch (numLivingNeighbors) {
+        case 0:
+        case 1:
             m_isAlive = false;
             pendingState = CELL_LONELY;
-            std::cout << numAlive << " live neighbors, pending state "
-                      << PENDING_STATE[pendingState] << std::endl;
+            break;
+        case 2:
+            pendingState = m_isAlive ? CELL_LIVING : CELL_DORMANT;
+            break;
+        case 3:
+            if (m_isAlive) {
+                pendingState = CELL_LIVING;
+            } else {
+                pendingState = CELL_REBORN;
+                m_isAlive = true;
+            }
+            break;
+        case 4:
+        case 5:
+        case 6:
+        case 7:
+            pendingState = CELL_CHOKED;
+            m_isAlive = false;
+            break;
+        default:
+            std::cerr << "Shouldn't be here: alive: " << std::boolalpha << m_isAlive
+                      << ", living neighbors: " << numLivingNeighbors << std::endl;
         }
 
         return pendingState;

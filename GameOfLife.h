@@ -6,7 +6,7 @@
 #include <vector>
 
 namespace gol {
-using ConwayCellVector = std::vector<sf::RectangleShape>;
+using RectangleShapeVec = std::vector<sf::RectangleShape>;
 
 constexpr sf::Vector2u GOL_WINDOW_SIZE{800, 600};
 
@@ -50,7 +50,7 @@ private:
     Window m_window{};
     sf::Clock m_clock{};
     sf::Time m_elapsed{};
-    ConwayCellVector m_conwayCells;
+    RectangleShapeVec m_cellRectangles;
     ConwayGrid m_conwayGrid;
     std::unordered_map<CellPending, sf::Color> m_cellColors{
             {CELL_DORMANT, COLOR_DORMANT},

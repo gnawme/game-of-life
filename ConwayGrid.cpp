@@ -45,7 +45,8 @@ ConwayGrid::ConwayGrid(PatternArray patternArray, bool wrapped)
         ++cellX;
     }
 
-    std::clog << "Constructed a " << m_width << " by " << m_height << " grid, " << liveCount << " live cells" << std::endl;
+    std::clog << "Constructed a " << m_width << " by " << m_height << " grid, " << liveCount
+              << " live cells" << std::endl;
 
     m_snapshot.reserve(m_width * m_height);
 }
@@ -53,12 +54,9 @@ ConwayGrid::ConwayGrid(PatternArray patternArray, bool wrapped)
 ///
 CellArray ConwayGrid::compute() {
     copyPendingToSnapshot();
-
-    auto pending = m_pending.begin();
-    for (auto& cell : m_snapshot) {
+    for (auto& cell : m_pending) {
         auto cellIsAlive = cell.computeNextState(m_snapshot);
-        pending->isAlive(cellIsAlive);
-        ++pending;
+        cell.isAlive(cellIsAlive);
     }
 
     return m_pending;

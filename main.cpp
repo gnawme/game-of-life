@@ -23,12 +23,15 @@ int main(int argc, char** argv) {
     ConwayGrid conwayGrid(patternArray);
     GameOfLife game(patternName, conwayGrid);
 
-    while (!game.getWindow()->isDone())
-    {
-        // Game loop.
+    constexpr sf::Time LIFE_TICK{sf::seconds(1.0)};
+
+    while (!game.getWindow()->isDone()) {
         game.handleInput();
-        game.update();
-        game.render();
-        game.restartClock();
+
+        if (game.getElapsed() >= LIFE_TICK) {
+            game.update();
+            game.render();
+            game.restartClock();
+        }
     }
 }

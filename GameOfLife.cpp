@@ -49,7 +49,7 @@ void GameOfLife::update() {
 ///
 void GameOfLife::render() {
     m_window.beginDraw();
-    for (auto& cell : m_conwayCells) {
+    for (auto& cell : m_cellRectangles) {
         m_window.draw(cell);
     }
     m_window.endDraw();
@@ -71,11 +71,9 @@ void GameOfLife::generateGrid() {
         for (auto j = 0; j < numCellsV; ++j) {
             sf::Vector2f cellPosition = {
                     gridStart.x + i * GOL_CELL_DIMENSION, gridStart.y + j * GOL_CELL_DIMENSION};
-            std::cout << "Creating cell at " << cellPosition.x << ", " << cellPosition.y
-                      << std::endl;
 
             auto currentCell = cells[i * numCellsV + j];
-            m_conwayCells.push_back(genLifeCell(currentCell, cellPosition, GOL_CELL_SIZE));
+            m_cellRectangles.push_back(genLifeCell(currentCell, cellPosition, GOL_CELL_SIZE));
         }
     }
 }
@@ -88,8 +86,6 @@ sf::RectangleShape GameOfLife::genLifeCell(
     sf::RectangleShape cell(cellSize);
     cell.setOrigin({0.5f * cellSize.x, 0.5f * cellSize.y});
     cell.setPosition(centroid);
-
-    std::cout << "Setting alive state " << std::boolalpha << currentCell.isAlive() << std::endl;
     cell.setFillColor(m_cellColors[currentCell.getPendingState()]);
 
     return cell;
@@ -98,7 +94,7 @@ sf::RectangleShape GameOfLife::genLifeCell(
 ///
 void GameOfLife::updateGrid() {
     CellArray cells = m_conwayGrid.getPendingGrid();
-    auto gridit = m_conwayCells.begin();
+    auto gridit = m_cellRectangles.begin();
     for (auto& cell : cells) {
         auto pendingState = cell.getPendingState();
         gridit->setFillColor(m_cellColors[pendingState]);
