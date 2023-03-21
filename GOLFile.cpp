@@ -35,7 +35,7 @@ PatternArray GOLFile::getPatternArray() {
 
 ///
 PatternArray GOLFile::readPatternFile(const char* filename) {
-    m_filename = {filename};
+    m_filename = filename;
     m_extension = getExtension(m_filename);
 
     return getPatternArray();
@@ -90,6 +90,10 @@ PatternArray GOLFile::readPlaintextPatternFile(const std::string& filename) {
         while (std::getline(pattern, line)) {
             if (line[0] == DELIM) {
                 continue;
+            }
+
+            if (!line.empty()) {
+                line.erase(std::remove_if(line.begin(), line.end(), ::isspace), line.end());
             }
 
             // Some variations of the plaintext format exists, which were results of

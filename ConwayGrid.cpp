@@ -22,14 +22,19 @@ ConwayGrid::ConwayGrid(int width, int height, bool wrapped)
 }
 
 ///
-ConwayGrid::ConwayGrid(PatternArray patternArray, bool wrapped)
+ConwayGrid::ConwayGrid(PatternArray patternArray, int padding, bool wrapped)
     : m_patternArray(std::move(patternArray))
     , m_width(patternArray[0].length())
     , m_height(patternArray.size())
+    , m_padding(padding)
     , m_wrapped(wrapped) {
 
     if (m_width != m_height) {
         squareConwayGrid();
+    }
+
+    if (padding != 0) {
+        padConwayGrid();
     }
 
     auto liveCount = 0;
@@ -84,6 +89,34 @@ CellArray ConwayGrid::getPendingGrid() const {
 void ConwayGrid::copyPendingToSnapshot() {
     m_snapshot.clear();
     std::copy(m_pending.begin(), m_pending.end(), std::back_inserter(m_snapshot));
+}
+
+/// \note PRIVATE
+void ConwayGrid::padConwayGrid() {
+    auto totalPad = m_padding - m_width;
+
+    if (totalPad > 0) {
+        auto padLeft = totalPad / 2;
+        auto padRight = totalPad - padLeft;
+        for (auto& row : m_patternArray) {
+            row.insert(0, padLeft, PTEXT_DEAD);
+            row.append(padRight, PTEXT_DEAD);
+        }
+
+        m_width += totalPad;
+
+        totalPad = m_padding - m_height;
+        auto padTop = totalPad / 2;
+        std::string padRow(m_width, PTEXT_DEAD);
+        m_patternArray.insert(m_patternArray.begin(), padTop, padRow);
+
+        auto padBottom = totalPad - padTop;
+        for (auto i = 0; i < padBottom; ++i) {
+            m_patternArray.push_back(padRow);
+        }
+
+        m_height += totalPad;
+    }
 }
 
 /// \note PRIVATE

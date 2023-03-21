@@ -10,7 +10,7 @@ namespace gol {
 class ConwayGrid {
 public:
     ConwayGrid(int width, int height, bool wrapped = false);
-    ConwayGrid(PatternArray patternArray, bool wrapped = false);
+    ConwayGrid(PatternArray patternArray, int padding = 0, bool wrapped = false);
 
     ConwayGrid() = delete;
 
@@ -22,10 +22,12 @@ public:
 
 private:
     void copyPendingToSnapshot();
+    void padConwayGrid();
     void squareConwayGrid();
 
     int m_width{10};
     int m_height{10};
+    int m_padding{0};
     bool m_wrapped{false};
     PatternArray m_patternArray;
     CellArray m_pending{};

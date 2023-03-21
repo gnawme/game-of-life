@@ -25,7 +25,8 @@ int main(int argc, char** argv) {
     std::clog << "Read Conway grid of " << patternArray.size() << " rows, "
               << patternArray[0].length() << " cols" << std::endl;
 
-    ConwayGrid conwayGrid(patternArray);
+    constexpr int STANDARD_GRID = 30;
+    ConwayGrid conwayGrid(patternArray, STANDARD_GRID);
     GameOfLife game(patternName, conwayGrid);
 
     while (!game.getWindow()->isDone()) {

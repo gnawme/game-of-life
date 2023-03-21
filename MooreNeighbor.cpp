@@ -15,7 +15,7 @@ NeighborArray mooreNeighborhood(int x, int y, int gridWidth, int gridHeight, boo
                 neighbors.emplace_back(std::make_pair(xCoord, yCoord));
             } else if (
                     xCoord >= 0 && xCoord < gridWidth && yCoord >= 0 && yCoord < gridHeight
-                    && !(i == 0 && j == 0)) {
+                    && (i != 0 || j != 0)) {
                 neighbors.emplace_back(std::make_pair(xCoord, yCoord));
             }
         }
