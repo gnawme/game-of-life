@@ -34,24 +34,6 @@ public:
     }
 
     ///
-    ConwayCell(const ConwayCell& rhs)
-        : m_cellX(rhs.m_cellX)
-        , m_cellY(rhs.m_cellY)
-        , m_gridW(rhs.m_gridW)
-        , m_gridH(rhs.m_gridH)
-        , m_isAlive(rhs.m_isAlive)
-        , m_cellPending(rhs.m_cellPending) {
-        std::copy(rhs.m_neighbors.begin(), rhs.m_neighbors.end(), std::back_inserter(m_neighbors));
-    }
-
-    ///
-    ConwayCell& operator=(ConwayCell rhs) {
-        ConwayCell temp(rhs);
-        m_neighbors.swap(rhs.m_neighbors);
-        return *this;
-    }
-
-    ///
     bool computeNextState(const CellArray& snapshot) {
         auto numLivingNeighbors = 0;
         for (const auto& [i, j] : m_neighbors) {
@@ -93,8 +75,10 @@ private:
         switch (numLivingNeighbors) {
         case 0:
         case 1:
-            m_isAlive = false;
-            pendingState = CELL_LONELY;
+            if (m_isAlive) {
+                m_isAlive = false;
+                pendingState = CELL_LONELY;
+            }
             break;
         case 2:
             pendingState = m_isAlive ? CELL_LIVING : CELL_ASLEEP;

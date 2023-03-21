@@ -16,8 +16,8 @@ constexpr sf::Vector2f GOL_CELL_SIZE{GOL_CELL_DIMENSION - 1.0, GOL_CELL_DIMENSIO
 constexpr sf::Color COLOR_ASLEEP{0X003F5CFF};
 constexpr sf::Color COLOR_LONELY{0X58508DFF};
 constexpr sf::Color COLOR_CHOKED{0XBC5090FF};
-constexpr sf::Color COLOR_LIVING{0XFF6361FF};
-constexpr sf::Color COLOR_REBORN{0XFFA600FF};
+constexpr sf::Color COLOR_LIVING{0XFFA600FF};
+constexpr sf::Color COLOR_REBORN{0XFF6361FF};
 
 constexpr float GAME_INTERVAL{1.0};
 
