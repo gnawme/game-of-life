@@ -4,14 +4,13 @@
 namespace gol {
 ///
 Window::Window() {
-    m_window.setFramerateLimit(60);
     create();
 }
 
 ///
 Window::Window(std::string_view title, const sf::Vector2u& size)
-        : m_windowTitle(title), m_windowSize(size) {
-    m_window.setFramerateLimit(60);
+    : m_windowTitle(title)
+    , m_windowSize(size) {
     create();
 }
 
