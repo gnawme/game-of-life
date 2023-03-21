@@ -10,9 +10,9 @@
 
 namespace gol {
 
-enum CellPending { CELL_DORMANT, CELL_LONELY, CELL_CHOKED, CELL_LIVING, CELL_REBORN };
+enum CellPending { CELL_ASLEEP, CELL_LONELY, CELL_CHOKED, CELL_LIVING, CELL_REBORN };
 static std::unordered_map<CellPending, std::string> PENDING_STATE{
-        {CELL_DORMANT, "CELL_DORMANT"},
+        {CELL_ASLEEP, "CELL_ASLEEP"},
         {CELL_LONELY, "CELL_LONELY"},
         {CELL_CHOKED, "CELL_CHOKED"},
         {CELL_LIVING, "CELL_LIVING"},
@@ -25,7 +25,7 @@ public:
     ///
     ConwayCell(int cellX, int cellY, int gridW, int gridH, bool alive = false, bool wrapped = false)
             : m_cellX(cellX), m_cellY(cellY), m_gridW(gridW), m_gridH(gridH), m_isAlive(alive) {
-        m_cellPending = m_isAlive ? CELL_LIVING : CELL_DORMANT;
+        m_cellPending = m_isAlive ? CELL_LIVING : CELL_ASLEEP;
         m_neighbors = mooreNeighborhood(cellX, cellY, gridW, gridH, wrapped);
     }
 
@@ -43,9 +43,7 @@ public:
     ///
     ConwayCell& operator=(ConwayCell rhs) {
         ConwayCell temp(rhs);
-
         m_neighbors.swap(rhs.m_neighbors);
-
         return *this;
     }
 
@@ -86,7 +84,7 @@ public:
 private:
     ///
     CellPending setPendingState(int numLivingNeighbors) {
-        CellPending pendingState = CELL_DORMANT;
+        CellPending pendingState = CELL_ASLEEP;
 
         switch (numLivingNeighbors) {
         case 0:
@@ -95,7 +93,7 @@ private:
             pendingState = CELL_LONELY;
             break;
         case 2:
-            pendingState = m_isAlive ? CELL_LIVING : CELL_DORMANT;
+            pendingState = m_isAlive ? CELL_LIVING : CELL_ASLEEP;
             break;
         case 3:
             if (m_isAlive) {
@@ -125,7 +123,7 @@ private:
     int m_gridW{0};
     int m_gridH{0};
     bool m_isAlive{false};
-    CellPending m_cellPending{CELL_DORMANT};
+    CellPending m_cellPending{CELL_ASLEEP};
 
     NeighborArray m_neighbors;
 };

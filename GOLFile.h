@@ -8,6 +8,7 @@ namespace gol {
 
 constexpr char PTEXT_LIVE{'O'};
 constexpr char PTEXT_DEAD{'.'};
+constexpr char DELIM{'!'};
 
 constexpr char CELLS[]{"cells"};
 constexpr char RLE[]{"rle"};
@@ -25,6 +26,7 @@ public:
     PatternArray readPatternFile(const std::string& filename);
 
 private:
+    std::size_t prescanPlaintext(std::ifstream& pattern);
     std::string getExtension(const std::string& filename);
     PatternArray readPlaintextPatternFile(const std::string& filename);
     PatternArray readRLEPatternFile(const std::string& filename);

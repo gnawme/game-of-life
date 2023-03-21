@@ -1,12 +1,13 @@
 #include "GameOfLife.h"
 
+#include <cassert>
 #include <cmath>
 #include <iostream>
 
 namespace gol {
 ///
-GameOfLife::GameOfLife(std::string_view pattern, ConwayGrid grid)
-        : m_window(pattern, GOL_WINDOW_SIZE), m_conwayGrid(std::move(grid)) {
+GameOfLife::GameOfLife(std::string_view patternName, ConwayGrid grid)
+        : m_window(patternName, GOL_WINDOW_SIZE), m_conwayGrid(std::move(grid)) {
     restartClock();
     generateGrid();
 }
@@ -76,6 +77,8 @@ void GameOfLife::generateGrid() {
             m_cellRectangles.push_back(genLifeCell(currentCell, cellPosition, GOL_CELL_SIZE));
         }
     }
+
+    std::cout << cells.size() << " pattern cells, " << m_cellRectangles.size() << " rectangles\n";
 }
 
 /// \note PRIVATE

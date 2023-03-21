@@ -39,6 +39,7 @@ ConwayGrid::ConwayGrid(PatternArray patternArray, bool wrapped)
             if (isAlive) {
                 ++liveCount;
             }
+
             m_pending.emplace_back(cellX, cellY, m_width, m_height, isAlive, m_wrapped);
             ++cellY;
         }
@@ -46,7 +47,7 @@ ConwayGrid::ConwayGrid(PatternArray patternArray, bool wrapped)
     }
 
     std::clog << "Constructed a " << m_width << " by " << m_height << " grid, " << liveCount
-              << " live cells" << std::endl;
+              << " live cells, " << m_pending.size() << " cells overall" << std::endl;
 
     m_snapshot.reserve(m_width * m_height);
 }

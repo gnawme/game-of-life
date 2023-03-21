@@ -74,8 +74,12 @@ void Window::update() {
     while (m_window.pollEvent(event)) {
         if (event.type == sf::Event::Closed) {
             m_isDone = true;
-        } else if (event.type == sf::Event::KeyPressed && event.key.code == sf::Keyboard::F5) {
-            toggleFullScreen();
+        } else if (event.type == sf::Event::KeyPressed) {
+            if (event.key.code == sf::Keyboard::F5) {
+                toggleFullScreen();
+            } else if (event.key.code == sf::Keyboard::Escape) {
+                m_isDone = true;
+            }
         }
     }
 }

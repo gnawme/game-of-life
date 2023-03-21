@@ -16,6 +16,11 @@ int main(int argc, char** argv) {
     GOLFile patternFile(patternName);
     std::clog << "Read pattern file " << patternFile.getFilename() << std::endl;
 
+    auto lastSlash = patternName.find_last_of('/');
+    if (lastSlash != std::string::npos) {
+        patternName = patternName.substr(lastSlash + 1);
+    }
+
     PatternArray patternArray = patternFile.getPatternArray();
     std::clog << "Read Conway grid of " << patternArray.size() << " rows, "
               << patternArray[0].length() << " cols" << std::endl;

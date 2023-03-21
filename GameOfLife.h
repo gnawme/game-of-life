@@ -13,18 +13,18 @@ constexpr sf::Vector2u GOL_WINDOW_SIZE{800, 600};
 constexpr float GOL_CELL_DIMENSION{16.0};
 constexpr sf::Vector2f GOL_CELL_SIZE{GOL_CELL_DIMENSION - 1.0, GOL_CELL_DIMENSION - 1.0};
 
-constexpr sf::Color COLOR_DORMANT{0x003f5cff};
-constexpr sf::Color COLOR_LONELY{0x58508dff};
-constexpr sf::Color COLOR_CHOKED{0xbc5090ff};
-constexpr sf::Color COLOR_LIVING{0xff6361ff};
-constexpr sf::Color COLOR_REBORN{0xffa600ff};
+constexpr sf::Color COLOR_ASLEEP{0X003F5CFF};
+constexpr sf::Color COLOR_LONELY{0X58508DFF};
+constexpr sf::Color COLOR_CHOKED{0XBC5090FF};
+constexpr sf::Color COLOR_LIVING{0XFF6361FF};
+constexpr sf::Color COLOR_REBORN{0XFFA600FF};
 
 constexpr float GAME_INTERVAL{1.0};
 
 ///
 class GameOfLife {
 public:
-    GameOfLife(std::string_view pattern, ConwayGrid grid);
+    GameOfLife(std::string_view patternName, ConwayGrid grid);
     ~GameOfLife();
 
     void handleInput();
@@ -53,7 +53,7 @@ private:
     RectangleShapeVec m_cellRectangles;
     ConwayGrid m_conwayGrid;
     std::unordered_map<CellPending, sf::Color> m_cellColors{
-            {CELL_DORMANT, COLOR_DORMANT},
+            {CELL_ASLEEP, COLOR_ASLEEP},
             {CELL_LONELY, COLOR_LONELY},
             {CELL_CHOKED, COLOR_CHOKED},
             {CELL_LIVING, COLOR_LIVING},
