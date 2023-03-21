@@ -9,7 +9,9 @@ namespace gol {
 
 ///
 ConwayGrid::ConwayGrid(int width, int height, bool wrapped)
-        : m_width(width), m_height(height), m_wrapped(wrapped) {
+    : m_width(width)
+    , m_height(height)
+    , m_wrapped(wrapped) {
     for (auto row = 0; row < m_width; ++row) {
         for (auto col = 0; col < m_height; ++col) {
             m_pending.emplace_back(row, col, m_width, m_height, m_wrapped);
@@ -21,10 +23,10 @@ ConwayGrid::ConwayGrid(int width, int height, bool wrapped)
 
 ///
 ConwayGrid::ConwayGrid(PatternArray patternArray, bool wrapped)
-        : m_patternArray(std::move(patternArray))
-        , m_width(patternArray[0].length())
-        , m_height(patternArray.size())
-        , m_wrapped(wrapped) {
+    : m_patternArray(std::move(patternArray))
+    , m_width(patternArray[0].length())
+    , m_height(patternArray.size())
+    , m_wrapped(wrapped) {
 
     if (m_width != m_height) {
         squareConwayGrid();

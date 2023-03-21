@@ -11,11 +11,13 @@ namespace gol {
 
 ///
 GOLFile::GOLFile(const char* filename)
-        : m_filename(filename), m_extension(getExtension({filename})) {}
+    : m_filename(filename)
+    , m_extension(getExtension({filename})) {}
 
 ///
 GOLFile::GOLFile(const std::string& filename)
-        : m_filename(filename), m_extension(getExtension(filename)) {}
+    : m_filename(filename)
+    , m_extension(getExtension(filename)) {}
 
 ///
 std::string GOLFile::getFilename() const {
@@ -90,10 +92,10 @@ PatternArray GOLFile::readPlaintextPatternFile(const std::string& filename) {
                 continue;
             }
 
-            // Some variations of the plaintext format exists, which were results of older manual
-            // encoding and should be corrected. For example, trailing dead cells are sometimes
-            // omitted on a line, and lines containing only dead cells are sometimes left completely
-            // blank.
+            // Some variations of the plaintext format exists, which were results of
+            // older manual encoding and should be corrected. For example, trailing
+            // dead cells are sometimes omitted on a line, and lines containing only
+            // dead cells are sometimes left completely blank.
             if (line.length() < maxLineLen) {
                 std::string pad(maxLineLen - line.length(), PTEXT_DEAD);
                 line.append(pad);

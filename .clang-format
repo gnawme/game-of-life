@@ -9,7 +9,7 @@ Standard: Cpp11
 # Indentation & whitespace
 AccessModifierOffset: -4
 ColumnLimit: 100
-ConstructorInitializerIndentWidth: 8
+ConstructorInitializerIndentWidth: 4
 ContinuationIndentWidth: 8
 IndentCaseLabels: false
 IndentWidth: 4
@@ -72,5 +72,5 @@ BreakBeforeInheritanceComma: true
 BreakBeforeTernaryOperators: true
 BreakConstructorInitializersBeforeComma: true
 BreakStringLiterals: false
-ConstructorInitializerAllOnOneLineOrOnePerLine: true
+ConstructorInitializerAllOnOneLineOrOnePerLine: false
 ...

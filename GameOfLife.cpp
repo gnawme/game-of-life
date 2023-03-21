@@ -7,7 +7,8 @@
 namespace gol {
 ///
 GameOfLife::GameOfLife(std::string_view patternName, ConwayGrid grid)
-        : m_window(patternName, GOL_WINDOW_SIZE), m_conwayGrid(std::move(grid)) {
+    : m_window(patternName, GOL_WINDOW_SIZE)
+    , m_conwayGrid(std::move(grid)) {
     restartClock();
     generateGrid();
 }

@@ -24,19 +24,23 @@ public:
 
     ///
     ConwayCell(int cellX, int cellY, int gridW, int gridH, bool alive = false, bool wrapped = false)
-            : m_cellX(cellX), m_cellY(cellY), m_gridW(gridW), m_gridH(gridH), m_isAlive(alive) {
+        : m_cellX(cellX)
+        , m_cellY(cellY)
+        , m_gridW(gridW)
+        , m_gridH(gridH)
+        , m_isAlive(alive) {
         m_cellPending = m_isAlive ? CELL_LIVING : CELL_ASLEEP;
         m_neighbors = mooreNeighborhood(cellX, cellY, gridW, gridH, wrapped);
     }
 
     ///
     ConwayCell(const ConwayCell& rhs)
-            : m_cellX(rhs.m_cellX)
-            , m_cellY(rhs.m_cellY)
-            , m_gridW(rhs.m_gridW)
-            , m_gridH(rhs.m_gridH)
-            , m_isAlive(rhs.m_isAlive)
-            , m_cellPending(rhs.m_cellPending) {
+        : m_cellX(rhs.m_cellX)
+        , m_cellY(rhs.m_cellY)
+        , m_gridW(rhs.m_gridW)
+        , m_gridH(rhs.m_gridH)
+        , m_isAlive(rhs.m_isAlive)
+        , m_cellPending(rhs.m_cellPending) {
         std::copy(rhs.m_neighbors.begin(), rhs.m_neighbors.end(), std::back_inserter(m_neighbors));
     }
 
