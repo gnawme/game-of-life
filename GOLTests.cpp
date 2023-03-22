@@ -8,7 +8,7 @@ using namespace gol;
 
 struct GOLTests : public ::testing::Test {
     void SetUp() override {
-        myPatternArray = myGOLFile.readPatternFile("../block.cells");
+        myPatternArray = myGOLFile.readPatternFile("../block.rle");
     }
 
     GOLFile myGOLFile;

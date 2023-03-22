@@ -6,12 +6,18 @@
 
 namespace gol {
 
+constexpr char CELLS[]{"cells"};
 constexpr char PTEXT_LIVE{'O'};
 constexpr char PTEXT_DEAD{'.'};
-constexpr char DELIM{'!'};
+constexpr char PTEXT_DELIM{'!'};
 
-constexpr char CELLS[]{"cells"};
 constexpr char RLE[]{"rle"};
+constexpr char RLE_LIVE{'o'};
+constexpr char RLE_DEAD{'b'};
+constexpr char RLE_DELIM{'#'};
+constexpr char RLE_HEADER{'x'};
+constexpr char RLE_EOL{'$'};
+constexpr char RLE_EOD{'!'};
 
 class GOLFile {
 public:

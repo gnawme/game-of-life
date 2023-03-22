@@ -4,7 +4,9 @@
 #include <algorithm>
 #include <cctype>
 #include <fstream>
+#include <iostream>
 #include <limits>
+#include <sstream>
 #include <string>
 
 namespace gol {
@@ -64,7 +66,7 @@ std::size_t GOLFile::prescanPlaintext(std::ifstream& pattern) {
     std::size_t maxLineLen = std::numeric_limits<std::size_t>::min();
     std::string line;
     while (std::getline(pattern, line)) {
-        if (line[0] == DELIM) {
+        if (line[0] == PTEXT_DELIM) {
             continue;
         }
 
@@ -88,7 +90,7 @@ PatternArray GOLFile::readPlaintextPatternFile(const std::string& filename) {
         PatternArray grid;
         std::string line;
         while (std::getline(pattern, line)) {
-            if (line[0] == DELIM) {
+            if (line[0] == PTEXT_DELIM) {
                 continue;
             }
 
@@ -115,8 +117,84 @@ PatternArray GOLFile::readPlaintextPatternFile(const std::string& filename) {
 }
 
 /// \note PRIVATE
+/// \see https://conwaylife.com/wiki/Run_Length_Encoded
 PatternArray GOLFile::readRLEPatternFile(const std::string& filename) {
     std::ifstream pattern(filename);
+    if (pattern) {
+        PatternArray grid;
+        std::string line;
+        auto gridW{0};
+        auto gridH{0};
+        while (std::getline(pattern, line)) {
+            if (line[0] == RLE_DELIM) {
+                continue;
+            }
+
+            if (line[0] == RLE_HEADER) {
+                std::vector<char> discard;
+                std::sscanf(
+                        line.c_str(), "x = %d, y = %d, rule = %s", &gridW, &gridH, discard.data());
+                break;
+            }
+        }
+
+        std::string commands(std::istreambuf_iterator<char>{pattern}, {});
+        if (!commands.empty()) {
+            commands.erase(
+                    std::remove_if(commands.begin(), commands.end(), ::isspace), commands.end());
+        }
+
+        std::stringstream ss;
+        std::string cmdString;
+        std::string blancLine(gridW, PTEXT_DEAD);
+        for (const auto& command : commands) {
+            if (std::isdigit(command)) {
+                ss << command;
+            } else {
+                int count = 1;
+                if (ss.rdbuf()->in_avail() != 0) {
+                    ss >> count;
+                    ss.str({});
+                    ss.clear();
+                }
+
+                switch (command) {
+                case RLE_DEAD:
+                    cmdString.append(count, PTEXT_DEAD);
+                    break;
+                case RLE_LIVE:
+                    cmdString.append(count, PTEXT_LIVE);
+                    break;
+                case RLE_EOL:
+                    if (cmdString.length() < gridW) {
+                        cmdString.append(gridW - cmdString.length(), PTEXT_DEAD);
+                    }
+                    grid.push_back(cmdString);
+                    cmdString = {};
+
+                    if (count > 1) {
+                        for (auto i = 0; i < count - 1; ++i) {
+                            grid.push_back(blancLine);
+                        }
+                    }
+                    break;
+                case RLE_EOD:
+                    if (cmdString.length() < gridW) {
+                        cmdString.append(gridW - cmdString.length(), PTEXT_DEAD);
+                    }
+                    grid.push_back(cmdString);
+
+                    if (grid.size() != gridH) {
+                        for (auto i = 0; i < gridH - grid.size(); ++i) {
+                            grid.push_back(blancLine);
+                        }
+                    }
+                    return grid;
+                }
+            }
+        }
+    }
+
     return {};
 }
 }  // namespace gol
