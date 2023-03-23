@@ -57,6 +57,10 @@ public:
         return m_neighbors.size();
     }
 
+    std::pair<int, int> getRowCol() const {
+        return {m_cellX, m_cellY};
+    }
+
     ///
     bool isAlive() const {
         return m_isAlive;

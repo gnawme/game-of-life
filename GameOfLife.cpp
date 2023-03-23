@@ -61,25 +61,23 @@ void GameOfLife::render() {
 void GameOfLife::generateGrid() {
     sf::Vector2f centroid{0.5f * m_window.getWindowSize().x, 0.5f * m_window.getWindowSize().y};
 
-    auto numCellsH = m_conwayGrid.getGridWidth();
-    auto numCellsV = m_conwayGrid.getGridHeight();
+    auto numRowCells = m_conwayGrid.getGridWidth();
+    auto numColCells = m_conwayGrid.getGridHeight();
 
-    auto totalWidth = numCellsH * GOL_CELL_DIMENSION;
-    auto totalHeight = numCellsV * GOL_CELL_DIMENSION;
+    auto totalWidth = numRowCells * GOL_CELL_DIMENSION;
+    auto totalHeight = numColCells * GOL_CELL_DIMENSION;
+    sf::Vector2f gridStart = {centroid.x - totalWidth / 2, centroid.y - totalHeight / 2};
 
     CellArray cells = m_conwayGrid.getPendingGrid();
-    sf::Vector2f gridStart = {centroid.x - totalWidth / 2, centroid.y - totalHeight / 2};
-    for (auto i = 0; i < numCellsH; ++i) {
-        for (auto j = 0; j < numCellsV; ++j) {
+    for (auto row = 0; row < numRowCells; ++row) {
+        for (auto col = 0; col < numColCells; ++col) {
             sf::Vector2f cellPosition = {
-                    gridStart.x + i * GOL_CELL_DIMENSION, gridStart.y + j * GOL_CELL_DIMENSION};
+                    gridStart.x + col * GOL_CELL_DIMENSION, gridStart.y + row * GOL_CELL_DIMENSION};
 
-            auto currentCell = cells[i * numCellsV + j];
+            auto currentCell = cells[row * numColCells + col];
             m_cellRectangles.push_back(genLifeCell(currentCell, cellPosition, GOL_CELL_SIZE));
         }
     }
-
-    std::cout << cells.size() << " pattern cells, " << m_cellRectangles.size() << " rectangles\n";
 }
 
 /// \note PRIVATE

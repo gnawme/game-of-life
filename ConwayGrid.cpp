@@ -16,6 +16,7 @@ ConwayGrid::ConwayGrid(int width, int height, bool wrapped)
         for (auto col = 0; col < m_height; ++col) {
             m_pending.emplace_back(row, col, m_width, m_height, m_wrapped);
         }
+        std::cout << std::endl;
     }
 
     m_snapshot.reserve(m_width * m_height);
@@ -38,19 +39,19 @@ ConwayGrid::ConwayGrid(PatternArray patternArray, int padding, bool wrapped)
     }
 
     auto liveCount = 0;
-    auto cellX = 0;
+    auto row = 0;
     for (const auto& patternRow : m_patternArray) {
-        auto cellY = 0;
+        auto col = 0;
         for (const auto& patternCol : patternRow) {
             bool isAlive = patternCol == PTEXT_LIVE;
             if (isAlive) {
                 ++liveCount;
             }
 
-            m_pending.emplace_back(cellX, cellY, m_width, m_height, isAlive, m_wrapped);
-            ++cellY;
+            m_pending.emplace_back(row, col, m_width, m_height, isAlive, m_wrapped);
+            ++col;
         }
-        ++cellX;
+        ++row;
     }
 
     std::clog << "Constructed a " << m_width << " by " << m_height << " grid, " << liveCount
