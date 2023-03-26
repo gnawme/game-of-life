@@ -115,16 +115,10 @@ private:
                 m_isAlive = true;
             }
             break;
-        case 4:
-        case 5:
-        case 6:
-        case 7:
+        default:
             pendingState = CELL_CHOKED;
             m_isAlive = false;
             break;
-        default:
-            std::cerr << "Shouldn't be here: alive: " << std::boolalpha << m_isAlive
-                      << ", living neighbors: " << numLivingNeighbors << std::endl;
         }
 
         return pendingState;
