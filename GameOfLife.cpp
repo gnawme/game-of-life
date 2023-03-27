@@ -107,7 +107,6 @@ sf::RectangleShape GameOfLife::genLifeCell(
         const sf::Vector2f& centroid,
         const sf::Vector2f& cellSize) {
     sf::RectangleShape cell(cellSize);
-    cell.setOrigin({0.5f * cellSize.x, 0.5f * cellSize.y});
     cell.setPosition(centroid);
     cell.setFillColor(m_cellColors[currentCell.getPendingState()]);
 
