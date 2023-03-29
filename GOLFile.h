@@ -45,7 +45,7 @@ public:
     GOLFile(const char* filename);
     GOLFile(const std::string& filename);
 
-    [[nodiscard]] std::string getFilename() const;
+    std::string getFilename() const;
     PatternArray getPatternArray();
 
     PatternArray readPatternFile(const char* filename);

@@ -26,8 +26,8 @@ namespace gol {
 ///
 NeighborArray mooreNeighborhood(int x, int y, int gridWidth, int gridHeight, bool wrapped) {
     NeighborArray neighbors;
-    for (auto i = -1; i <= 1; i++) {
-        for (auto j = -1; j <= 1; j++) {
+    for (auto i = -1; i <= 1; ++i) {
+        for (auto j = -1; j <= 1; ++j) {
             auto xCoord = x + i;
             auto yCoord = y + j;
             if (wrapped && (xCoord < 0 || xCoord == gridWidth || yCoord < 0 || yCoord == gridHeight)

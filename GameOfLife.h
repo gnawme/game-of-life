@@ -27,12 +27,8 @@
 #include <vector>
 
 namespace gol {
-using RectangleShapeVec = std::vector<sf::RectangleShape>;
-
-constexpr sf::Vector2u GOL_WINDOW_SIZE{800, 600};
-
-constexpr float GOL_CELL_DIMENSION{16.0};
-constexpr sf::Vector2f GOL_CELL_SIZE{GOL_CELL_DIMENSION - 1.0, GOL_CELL_DIMENSION - 1.0};
+using RectangleShapeRow = std::vector<sf::RectangleShape>;
+using RectangleShapeArray = std::vector<RectangleShapeRow>;
 
 constexpr sf::Color COLOR_ASLEEP{0X003F5CFF};
 constexpr sf::Color COLOR_LONELY{0X58508DFF};
@@ -45,7 +41,11 @@ constexpr float GAME_INTERVAL{1.0};
 ///
 class GameOfLife {
 public:
-    GameOfLife(std::string_view patternName, ConwayGrid grid);
+    GameOfLife(
+            std::string_view patternName,
+            ConwayGrid grid,
+            ScreenSize screenSize,
+            float tileSize);
     ~GameOfLife();
 
     void handleInput();
@@ -63,16 +63,19 @@ private:
 
     sf::RectangleShape genLifeCell(
             const ConwayCell& currentCell,
-            const sf::Vector2f& centroid,
+            const sf::Vector2f& cellPosition,
             const sf::Vector2f& cellSize);
 
     void updateGrid();
 
     Window m_window{};
+    ConwayGrid m_conwayGrid;
+    float m_tileSize{16.0};
+
     sf::Clock m_clock{};
     sf::Time m_elapsed{};
-    RectangleShapeVec m_cellRectangles;
-    ConwayGrid m_conwayGrid;
+    RectangleShapeArray m_cellRectangles;
+
     std::unordered_map<CellPending, sf::Color> m_cellColors{
             {CELL_ASLEEP, COLOR_ASLEEP},
             {CELL_LONELY, COLOR_LONELY},

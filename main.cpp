@@ -34,7 +34,7 @@ int main(int argc, char** argv) {
 
     std::string patternName(*++argv);
     GOLFile patternFile(patternName);
-    std::clog << "Read pattern file " << patternFile.getFilename() << std::endl;
+    std::clog << "Opened pattern file " << patternFile.getFilename() << std::endl;
 
     auto lastSlash = patternName.find_last_of('/');
     if (lastSlash != std::string::npos) {
@@ -42,12 +42,16 @@ int main(int argc, char** argv) {
     }
 
     PatternArray patternArray = patternFile.getPatternArray();
+    if (patternArray.empty()) {
+        std::cerr << "Couldn't read pattern file " << patternFile.getFilename() << std::endl;
+        EXIT_FAILURE;
+    }
+
     std::clog << "Read Conway grid of " << patternArray.size() << " rows, "
               << patternArray[0].length() << " cols" << std::endl;
 
-    constexpr int STANDARD_GRID = 36;
-    ConwayGrid conwayGrid(patternArray, STANDARD_GRID);
-    GameOfLife game(patternName, conwayGrid);
+    ConwayGrid conwayGrid(patternArray, GOL_TILING_720P);
+    GameOfLife game(patternName, conwayGrid, GOL_SCREEN_720P, GOL_TILE_SIZE);
 
     while (!game.getWindow()->isDone()) {
         game.handleInput();

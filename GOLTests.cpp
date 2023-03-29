@@ -29,7 +29,7 @@ using namespace gol;
 
 struct GOLTests : public ::testing::Test {
     void SetUp() override {
-        myPatternArray = myGOLFile.readPatternFile("../block.rle");
+        myPatternArray = myGOLFile.readPatternFile("../block.cells");
     }
 
     GOLFile myGOLFile;
@@ -39,6 +39,10 @@ struct GOLTests : public ::testing::Test {
     static constexpr int CELL_Y{1};
     static constexpr int W3x3{3};
     static constexpr int H3x3{3};
+    static constexpr int W2x2{2};
+    static constexpr int H2x2{2};
+    static constexpr int W3x2{2};
+    static constexpr int H3x2{3};
 };
 
 ///
@@ -55,9 +59,6 @@ TEST_F(GOLTests, NeighborhoodOfCenterCellIsNotEmpty) {
 
 ///
 TEST_F(GOLTests, NeighborhoodOfCornerCellsShouldBe3) {
-    constexpr int W2x2{2};
-    constexpr int H2x2{2};
-
     ConwayCell ul(0, 0, W2x2, H2x2);
     EXPECT_EQ(ul.getNumNeighbors(), 3);
     ConwayCell ur(1, 0, W2x2, H2x2);
@@ -70,9 +71,6 @@ TEST_F(GOLTests, NeighborhoodOfCornerCellsShouldBe3) {
 
 ///
 TEST_F(GOLTests, NeighborhoodOfWrappedCornerCellsShouldBe8) {
-    constexpr int W2x2{2};
-    constexpr int H2x2{2};
-
     ConwayCell ul(0, 0, W2x2, H2x2, false, true);
     EXPECT_EQ(ul.getNumNeighbors(), 8);
     ConwayCell ur(1, 0, W2x2, H2x2, false, true);
@@ -84,6 +82,23 @@ TEST_F(GOLTests, NeighborhoodOfWrappedCornerCellsShouldBe8) {
 }
 
 ///
+TEST_F(GOLTests, NeighborhoodOfEdgeCellsShouldBeComputedProperly) {
+    ConwayCell tl(0, 0, W3x2, H3x2);
+    EXPECT_EQ(tl.getNumNeighbors(), 3);
+    ConwayCell tr(1, 0, W3x2, H3x2);
+    EXPECT_EQ(tr.getNumNeighbors(), 3);
+
+    ConwayCell ml(0, 1, W3x2, H3x2);
+    EXPECT_EQ(ml.getNumNeighbors(), 5);
+    ConwayCell mr(1, 1, W3x2, H3x2);
+    EXPECT_EQ(mr.getNumNeighbors(), 5);
+    ConwayCell ll(0, 2, W3x2, H3x2);
+    EXPECT_EQ(ll.getNumNeighbors(), 3);
+    ConwayCell lr(1, 2, W3x2, H3x2);
+    EXPECT_EQ(lr.getNumNeighbors(), 3);
+}
+
+///
 TEST_F(GOLTests, ReadingPlaintextBlockShouldReturn2x2) {
     EXPECT_EQ(myPatternArray.size(), 2);
     EXPECT_EQ(myPatternArray[0].size(), 2);
@@ -91,7 +106,7 @@ TEST_F(GOLTests, ReadingPlaintextBlockShouldReturn2x2) {
 
 ///
 TEST_F(GOLTests, ConstructingGridFromPatternShouldWork) {
-    auto blockGrid = ConwayGrid(myPatternArray);
+    auto blockGrid = ConwayGrid(myPatternArray, {2, 2});
 
     auto pendingGrid = blockGrid.getPendingGrid();
     EXPECT_TRUE(!pendingGrid.empty());
@@ -99,8 +114,10 @@ TEST_F(GOLTests, ConstructingGridFromPatternShouldWork) {
     auto newGrid = blockGrid.compute();
     EXPECT_TRUE(!newGrid.empty());
     auto allAlive = true;
-    for (const auto& cell : newGrid) {
-        allAlive = allAlive && cell.isAlive();
+    for (const auto& cellRow : newGrid) {
+        for (const auto& cell : cellRow) {
+            allAlive = allAlive && cell.isAlive();
+        }
     }
     EXPECT_TRUE(allAlive);
 }

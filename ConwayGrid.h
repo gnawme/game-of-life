@@ -30,24 +30,25 @@ namespace gol {
 class ConwayGrid {
 public:
     ConwayGrid(int width, int height, bool wrapped = false);
-    ConwayGrid(PatternArray patternArray, int padding = 0, bool wrapped = false);
+    ConwayGrid(PatternArray patternArray, ScreenSize padding, bool wrapped = false);
 
     ConwayGrid() = delete;
 
     CellArray compute();
+    void dumpPendingGrid() const;
 
     int getGridHeight() const;
     int getGridWidth() const;
     CellArray getPendingGrid() const;
+    CellArray getSnapshotGrid() const;
 
 private:
     void copyPendingToSnapshot();
-    void padConwayGrid();
-    void squareConwayGrid();
+    void fitGridToWindow();
 
     int m_width{10};
     int m_height{10};
-    int m_padding{0};
+    ScreenSize m_padding{};
     bool m_wrapped{false};
     PatternArray m_patternArray;
     CellArray m_pending{};

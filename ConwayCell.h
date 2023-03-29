@@ -48,28 +48,35 @@ public:
         , m_cellY(cellY)
         , m_gridW(gridW)
         , m_gridH(gridH)
-        , m_isAlive(alive) {
-        m_cellPending = m_isAlive ? CELL_LIVING : CELL_ASLEEP;
+        , m_isAlive(alive)
+        , m_wrapped(wrapped)
+        , m_pendingState(m_isAlive ? CELL_LIVING : CELL_ASLEEP) {
         m_neighbors = mooreNeighborhood(cellX, cellY, gridW, gridH, wrapped);
+    }
+
+    ///
+    bool operator==(const ConwayCell& rhs) const {
+        return (m_cellX == rhs.m_cellX && m_cellY == rhs.m_cellY && m_isAlive == rhs.m_isAlive
+                && m_pendingState == rhs.m_pendingState);
     }
 
     ///
     bool computeNextState(const CellArray& snapshot) {
         auto numLivingNeighbors = 0;
-        for (const auto& [i, j] : m_neighbors) {
-            auto index = i * m_gridW + j;
-            if (snapshot[index].m_isAlive) {
+        for (const auto& [row, col] : m_neighbors) {
+            auto cell = snapshot[col][row];
+            if (cell.m_isAlive) {
                 ++numLivingNeighbors;
             }
         }
 
-        m_cellPending = setPendingState(numLivingNeighbors);
+        m_pendingState = setPendingState(numLivingNeighbors);
         return m_isAlive;
     }
 
     ///
     CellPending getPendingState() const {
-        return m_cellPending;
+        return m_pendingState;
     }
 
     ///
@@ -129,7 +136,8 @@ private:
     int m_gridW{0};
     int m_gridH{0};
     bool m_isAlive{false};
-    CellPending m_cellPending{CELL_ASLEEP};
+    bool m_wrapped{false};
+    CellPending m_pendingState{CELL_ASLEEP};
 
     NeighborArray m_neighbors;
 };

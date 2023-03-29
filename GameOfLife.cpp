@@ -27,9 +27,14 @@
 
 namespace gol {
 ///
-GameOfLife::GameOfLife(std::string_view patternName, ConwayGrid grid)
-    : m_window(patternName, GOL_WINDOW_SIZE)
-    , m_conwayGrid(std::move(grid)) {
+GameOfLife::GameOfLife(
+        std::string_view patternName,
+        ConwayGrid grid,
+        ScreenSize screenSize,
+        float tileSize)
+    : m_window(patternName, {screenSize.first, screenSize.second})
+    , m_conwayGrid(std::move(grid))
+    , m_tileSize(tileSize) {
     restartClock();
     generateGrid();
 }
@@ -72,42 +77,49 @@ void GameOfLife::update() {
 ///
 void GameOfLife::render() {
     m_window.beginDraw();
-    for (auto& cell : m_cellRectangles) {
-        m_window.draw(cell);
+    for (auto& cellRow : m_cellRectangles) {
+        for (auto& cell : cellRow) {
+            m_window.draw(cell);
+        }
     }
     m_window.endDraw();
 }
 
 ///
 void GameOfLife::generateGrid() {
+    auto gridHeight = m_conwayGrid.getGridHeight();
+    auto gridWidth = m_conwayGrid.getGridWidth();
+
+    auto totalWidth = gridWidth * m_tileSize;
+    auto totalHeight = gridHeight * m_tileSize;
+
     sf::Vector2f centroid{0.5f * m_window.getWindowSize().x, 0.5f * m_window.getWindowSize().y};
-
-    auto numRowCells = m_conwayGrid.getGridWidth();
-    auto numColCells = m_conwayGrid.getGridHeight();
-
-    auto totalWidth = numRowCells * GOL_CELL_DIMENSION;
-    auto totalHeight = numColCells * GOL_CELL_DIMENSION;
     sf::Vector2f gridStart = {centroid.x - totalWidth / 2, centroid.y - totalHeight / 2};
 
-    CellArray cells = m_conwayGrid.getPendingGrid();
-    for (auto row = 0; row < numRowCells; ++row) {
-        for (auto col = 0; col < numColCells; ++col) {
+    CellArray cellArray = m_conwayGrid.getPendingGrid();
+    sf::Vector2f cellSize{m_tileSize - 1.0f, m_tileSize - 1.0f};
+    auto row = 0;
+    for (const auto& cellRow : cellArray) {
+        auto col = 0;
+        RectangleShapeRow shapeRow{};
+        for (const auto& cell : cellRow) {
             sf::Vector2f cellPosition = {
-                    gridStart.x + col * GOL_CELL_DIMENSION, gridStart.y + row * GOL_CELL_DIMENSION};
-
-            auto currentCell = cells[row * numColCells + col];
-            m_cellRectangles.push_back(genLifeCell(currentCell, cellPosition, GOL_CELL_SIZE));
+                    gridStart.x + col * m_tileSize, gridStart.y + row * m_tileSize};
+            shapeRow.push_back(genLifeCell(cell, cellPosition, cellSize));
+            ++col;
         }
+        m_cellRectangles.push_back(shapeRow);
+        ++row;
     }
 }
 
 /// \note PRIVATE
 sf::RectangleShape GameOfLife::genLifeCell(
         const ConwayCell& currentCell,
-        const sf::Vector2f& centroid,
+        const sf::Vector2f& cellPosition,
         const sf::Vector2f& cellSize) {
     sf::RectangleShape cell(cellSize);
-    cell.setPosition(centroid);
+    cell.setPosition(cellPosition);
     cell.setFillColor(m_cellColors[currentCell.getPendingState()]);
 
     return cell;
@@ -116,11 +128,16 @@ sf::RectangleShape GameOfLife::genLifeCell(
 ///
 void GameOfLife::updateGrid() {
     CellArray cells = m_conwayGrid.getPendingGrid();
-    auto gridit = m_cellRectangles.begin();
-    for (auto& cell : cells) {
-        auto pendingState = cell.getPendingState();
-        gridit->setFillColor(m_cellColors[pendingState]);
-        ++gridit;
+    auto row = 0;
+    for (auto& cellRow : m_cellRectangles) {
+        auto col = 0;
+        for (auto& cell : cellRow) {
+            auto currentCell = cells[row][col];
+            auto pendingState = currentCell.getPendingState();
+            cell.setFillColor(m_cellColors[pendingState]);
+            ++col;
+        }
+        ++row;
     }
 }
 

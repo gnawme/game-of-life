@@ -23,6 +23,8 @@
 #include "GOLFile.h"
 
 #include <algorithm>
+#include <cassert>
+#include <cmath>
 #include <iostream>
 
 namespace gol {
@@ -33,44 +35,41 @@ ConwayGrid::ConwayGrid(int width, int height, bool wrapped)
     , m_height(height)
     , m_wrapped(wrapped) {
     for (auto row = 0; row < m_width; ++row) {
+        CellRow cellRow;
         for (auto col = 0; col < m_height; ++col) {
-            m_pending.emplace_back(row, col, m_width, m_height, m_wrapped);
+            cellRow.emplace_back(row, col, m_width, m_height, m_wrapped);
         }
-        std::cout << std::endl;
+        m_pending.push_back(cellRow);
     }
 
     m_snapshot.reserve(m_width * m_height);
 }
 
 ///
-ConwayGrid::ConwayGrid(PatternArray patternArray, int padding, bool wrapped)
+ConwayGrid::ConwayGrid(PatternArray patternArray, ScreenSize padding, bool wrapped)
     : m_patternArray(std::move(patternArray))
     , m_width(patternArray[0].length())
     , m_height(patternArray.size())
-    , m_padding(padding)
+    , m_padding(std::move(padding))
     , m_wrapped(wrapped) {
 
-    if (m_width != m_height) {
-        squareConwayGrid();
-    }
-
-    if (padding != 0) {
-        padConwayGrid();
-    }
+    fitGridToWindow();
 
     auto liveCount = 0;
     auto row = 0;
     for (const auto& patternRow : m_patternArray) {
         auto col = 0;
+        CellRow cellRow;
         for (const auto& patternCol : patternRow) {
             bool isAlive = patternCol == PTEXT_LIVE;
             if (isAlive) {
                 ++liveCount;
             }
 
-            m_pending.emplace_back(row, col, m_width, m_height, isAlive, m_wrapped);
+            cellRow.emplace_back(col, row, m_width, m_height, isAlive, m_wrapped);
             ++col;
         }
+        m_pending.push_back(cellRow);
         ++row;
     }
 
@@ -83,12 +82,23 @@ ConwayGrid::ConwayGrid(PatternArray patternArray, int padding, bool wrapped)
 ///
 CellArray ConwayGrid::compute() {
     copyPendingToSnapshot();
-    for (auto& cell : m_pending) {
-        auto cellIsAlive = cell.computeNextState(m_snapshot);
-        cell.isAlive(cellIsAlive);
+    for (auto& cellRow : m_pending) {
+        for (auto& cell : cellRow) {
+            cell.isAlive(cell.computeNextState(m_snapshot));
+        }
     }
 
     return m_pending;
+}
+
+///
+void ConwayGrid::dumpPendingGrid() const {
+    for (const auto& cellRow : m_pending) {
+        for (const auto& cell : cellRow) {
+            std::clog << (cell.isAlive() ? PTEXT_LIVE : PTEXT_DEAD);
+        }
+        std::clog << std::endl;
+    }
 }
 
 ///
@@ -106,66 +116,51 @@ CellArray ConwayGrid::getPendingGrid() const {
     return m_pending;
 }
 
+///
+CellArray ConwayGrid::getSnapshotGrid() const {
+    return m_snapshot;
+}
+
 /// \note PRIVATE
 void ConwayGrid::copyPendingToSnapshot() {
     m_snapshot.clear();
     std::copy(m_pending.begin(), m_pending.end(), std::back_inserter(m_snapshot));
+    assert(m_pending == m_snapshot);
 }
 
 /// \note PRIVATE
-void ConwayGrid::padConwayGrid() {
-    auto totalPad = m_padding - m_width;
+void ConwayGrid::fitGridToWindow() {
+    auto padWidth = static_cast<int>(m_padding.first - m_width);
 
-    if (totalPad > 0) {
-        auto padLeft = totalPad / 2;
-        auto padRight = totalPad - padLeft;
+    if (padWidth > 0) {
+        auto padLeft = static_cast<int>(std::ceil(padWidth / 2));
+        auto padRight = padWidth - padLeft;
         for (auto& row : m_patternArray) {
             row.insert(0, padLeft, PTEXT_DEAD);
             row.append(padRight, PTEXT_DEAD);
         }
 
-        m_width += totalPad;
+        std::clog << "Padded pattern with " << padLeft << " left, " << padRight << " right"
+                  << std::endl;
 
-        totalPad = m_padding - m_height;
-        auto padTop = totalPad / 2;
+        m_width += padWidth;
+    }
+
+    auto padHeight = static_cast<int>(m_padding.second - m_height);
+    if (padHeight > 0) {
+        auto padTop = static_cast<int>(std::ceil(padHeight / 2));
         std::string padRow(m_width, PTEXT_DEAD);
         m_patternArray.insert(m_patternArray.begin(), padTop, padRow);
 
-        auto padBottom = totalPad - padTop;
+        auto padBottom = padHeight - padTop;
         for (auto i = 0; i < padBottom; ++i) {
             m_patternArray.push_back(padRow);
         }
+        std::clog << "Padded pattern with " << padTop << " top, " << padBottom << " bottom"
+                  << std::endl;
 
-        m_height += totalPad;
+        m_height += padHeight;
     }
 }
 
-/// \note PRIVATE
-void ConwayGrid::squareConwayGrid() {
-    auto diff = m_width - m_height;
-
-    if (diff > 0) {
-        std::string deadRow(m_patternArray[0].length(), PTEXT_DEAD);
-        for (auto i = 1; i < diff + 1; ++i) {
-            if (i % 2 == 0) {
-                m_patternArray.push_back(deadRow);
-            } else {
-                m_patternArray.insert(m_patternArray.begin(), deadRow);
-            }
-        }
-        m_height = m_width;
-    } else {
-        for (auto& padme : m_patternArray) {
-            auto wdiff = -diff;
-            for (auto i = 1; i < wdiff + 1; ++i) {
-                if (i % 2 == 0) {
-                    padme.push_back(PTEXT_DEAD);
-                } else {
-                    padme.insert(0, 1, PTEXT_DEAD);
-                }
-            }
-        }
-        m_width = m_height;
-    }
-}
 }  // namespace gol
