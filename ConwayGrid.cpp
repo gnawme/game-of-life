@@ -73,8 +73,9 @@ ConwayGrid::ConwayGrid(PatternArray patternArray, ScreenSize padding, bool wrapp
         ++row;
     }
 
-    std::clog << "Constructed a " << m_width << " by " << m_height << " grid, " << liveCount
-              << " live cells, " << m_pending.size() << " cells overall" << std::endl;
+    std::clog << "Constructed " << m_width << " by " << m_height << " grid, " << liveCount
+              << " live cells, " << m_pending.size() * m_pending[0].size() << " cells overall"
+              << std::endl;
 
     m_snapshot.reserve(m_width * m_height);
 }
@@ -140,9 +141,6 @@ void ConwayGrid::fitGridToWindow() {
             row.append(padRight, PTEXT_DEAD);
         }
 
-        std::clog << "Padded pattern with " << padLeft << " left, " << padRight << " right"
-                  << std::endl;
-
         m_width += padWidth;
     }
 
@@ -156,8 +154,6 @@ void ConwayGrid::fitGridToWindow() {
         for (auto i = 0; i < padBottom; ++i) {
             m_patternArray.push_back(padRow);
         }
-        std::clog << "Padded pattern with " << padTop << " top, " << padBottom << " bottom"
-                  << std::endl;
 
         m_height += padHeight;
     }

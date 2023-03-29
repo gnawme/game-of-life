@@ -50,7 +50,8 @@ int main(int argc, char** argv) {
     std::clog << "Read Conway grid of " << patternArray.size() << " rows, "
               << patternArray[0].length() << " cols" << std::endl;
 
-    ConwayGrid conwayGrid(patternArray, GOL_TILING_720P);
+    bool wrappedGrid = true;
+    ConwayGrid conwayGrid(patternArray, GOL_TILING_720P, wrappedGrid);
     GameOfLife game(patternName, conwayGrid, GOL_SCREEN_720P, GOL_TILE_SIZE);
 
     while (!game.getWindow()->isDone()) {
