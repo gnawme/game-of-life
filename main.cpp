@@ -23,6 +23,8 @@
 #include "GOLFile.h"
 #include "GameOfLife.h"
 
+#include <cxxopts.hpp>
+
 #include <iostream>
 
 using namespace gol;
@@ -30,7 +32,14 @@ using namespace gol;
 int main(int argc, char** argv) {
     if (argc == 1) {
         std::cerr << "usage: game_of_life <pattern-file-name>" << std::endl;
+        EXIT_FAILURE;
     }
+
+    cxxopts::Options options("game_of_life", "Conway's Game of Life in C++ and SFML");
+    options.add_options()("wrapped", "Set grid to wrap at its edges");
+    auto result = options.parse(argc, argv);
+    bool wrappedGrid = result["wrapped"].as<bool>();
+    std::clog << "Setting " << (wrappedGrid ? "infinite" : "bounded") << " grid" << std::endl;
 
     std::string patternName(*++argv);
     GOLFile patternFile(patternName);
@@ -50,7 +59,6 @@ int main(int argc, char** argv) {
     std::clog << "Read Conway grid of " << patternArray.size() << " rows, "
               << patternArray[0].length() << " cols" << std::endl;
 
-    bool wrappedGrid = true;
     ConwayGrid conwayGrid(patternArray, GOL_TILING_720P, wrappedGrid);
     GameOfLife game(patternName, conwayGrid, GOL_SCREEN_720P, GOL_TILE_SIZE);
 
