@@ -26,8 +26,31 @@
 #include <cxxopts.hpp>
 
 #include <iostream>
+#include <optional>
 
 using namespace gol;
+
+namespace {
+///
+std::optional<float> fitPatternToScreenSize(const PatternArray& patternArray) {
+    auto tileSize = GOL_TILE_SIZE;
+    auto maxCols = patternArray[0].length() * tileSize;
+    auto maxRows = patternArray.size() * tileSize;
+
+    while (maxCols > GOL_SCREEN_720P.first || maxRows > GOL_SCREEN_720P.second) {
+        tileSize /= 2;
+        if (tileSize == 1) {
+            return std::nullopt;
+        }
+
+        maxCols = patternArray[0].length() * tileSize;
+        maxRows = patternArray.size() * tileSize;
+    }
+
+    return tileSize;
+}
+}  // namespace
+
 ///
 int main(int argc, char** argv) {
     if (argc == 1) {
@@ -61,13 +84,25 @@ int main(int argc, char** argv) {
 
     std::clog << "Read Conway grid of " << patternArray.size() << " rows, "
               << patternArray[0].length() << " cols" << std::endl;
-    ConwayGrid conwayGrid(patternArray, GOL_TILING_720P, wrappedGrid);
-    GameOfLife game(patternName, conwayGrid, GOL_SCREEN_720P, GOL_TILE_SIZE);
+    auto tileSize = fitPatternToScreenSize(patternArray);
+    if (!tileSize.has_value()) {
+        std::cerr << patternFile.getFilename() << " is larger than currently supported"
+                  << std::endl;
+        EXIT_FAILURE;
+    }
 
-    while (!game.getWindow()->isDone()) {
+    ScreenSize tiling = {
+            static_cast<unsigned int>(GOL_SCREEN_720P.first / tileSize.value()),
+            static_cast<unsigned int>(GOL_SCREEN_720P.second / tileSize.value())};
+
+    ConwayGrid conwayGrid(patternArray, tiling, wrappedGrid);
+    GameOfLife game(patternName, conwayGrid, GOL_SCREEN_720P, tileSize.value());
+
+    auto* gameWindow = game.getWindow();
+    while (!gameWindow->isDone()) {
         game.handleInput();
 
-        constexpr sf::Time LIFE_TICK{sf::seconds(1.0)};
+        constexpr sf::Time LIFE_TICK{sf::seconds(0.5)};
         if (game.getElapsed() >= LIFE_TICK) {
             game.update();
             game.render();

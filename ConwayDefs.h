@@ -34,7 +34,6 @@ using ScreenSize = std::pair<unsigned int, unsigned int>;
 
 static constexpr ScreenSize GOL_SCREEN_720P{1280, 720};
 static constexpr float GOL_TILE_SIZE{16.0};
-static constexpr ScreenSize GOL_SQUARE_TILING{80, 45};
 static constexpr ScreenSize GOL_TILING_720P{
         static_cast<unsigned int>(GOL_SCREEN_720P.first / GOL_TILE_SIZE),
         static_cast<unsigned int>(GOL_SCREEN_720P.second / GOL_TILE_SIZE)};
