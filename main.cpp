@@ -36,7 +36,10 @@ int main(int argc, char** argv) {
     }
 
     cxxopts::Options options("game_of_life", "Conway's Game of Life in C++ and SFML");
-    options.add_options()("wrapped", "Set grid to wrap at its edges");
+    options.add_options()(
+            "wrapped",
+            "Set grid to wrap at its edges",
+            cxxopts::value<bool>()->default_value("false"));
     auto result = options.parse(argc, argv);
     bool wrappedGrid = result["wrapped"].as<bool>();
     std::clog << "Setting " << (wrappedGrid ? "infinite" : "bounded") << " grid" << std::endl;
@@ -58,7 +61,6 @@ int main(int argc, char** argv) {
 
     std::clog << "Read Conway grid of " << patternArray.size() << " rows, "
               << patternArray[0].length() << " cols" << std::endl;
-
     ConwayGrid conwayGrid(patternArray, GOL_TILING_720P, wrappedGrid);
     GameOfLife game(patternName, conwayGrid, GOL_SCREEN_720P, GOL_TILE_SIZE);
 
