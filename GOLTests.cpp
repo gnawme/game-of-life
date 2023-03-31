@@ -1,6 +1,7 @@
 /// \file GOLTests.cpp
 /// \author Norm Evangelista
 /// \copyright (c) 2023 Norm Evangelista
+// Copyright 2023 gnawme (Norm Evangelista)
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -120,4 +121,11 @@ TEST_F(GOLTests, ConstructingGridFromPatternShouldWork) {
         }
     }
     EXPECT_TRUE(allAlive);
+}
+
+///
+TEST_F(GOLTests, ConstructingRandomSoupShouldWork) {
+    auto soupGrid = ConwayGrid(GOL_TILING_720P);
+    EXPECT_TRUE(soupGrid.getGridWidth() == GOL_TILING_720P.first);
+    EXPECT_TRUE(soupGrid.getGridHeight() == GOL_TILING_720P.second);
 }

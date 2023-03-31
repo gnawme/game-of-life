@@ -1,6 +1,7 @@
 /// \file ConwayGrid.h
 /// \author Norm Evangelista
 /// \copyright (c) 2023 Norm Evangelista
+// Copyright 2023 gnawme (Norm Evangelista)
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -29,7 +30,7 @@ namespace gol {
 
 class ConwayGrid {
 public:
-    ConwayGrid(int width, int height, bool wrapped = false);
+    ConwayGrid(ScreenSize screenSize, bool wrapped = false);
     ConwayGrid(PatternArray patternArray, ScreenSize padding, bool wrapped = false);
 
     ConwayGrid() = delete;
@@ -45,12 +46,13 @@ public:
 private:
     void copyPendingToSnapshot();
     void fitGridToWindow();
+    void populatePendingGrid();
 
     int m_width{10};
     int m_height{10};
     ScreenSize m_padding{};
     bool m_wrapped{false};
-    PatternArray m_patternArray;
+    PatternArray m_patternArray{};
     CellArray m_pending{};
     CellArray m_snapshot{};
 };

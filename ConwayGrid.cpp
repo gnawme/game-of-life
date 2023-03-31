@@ -22,6 +22,9 @@
 #include "ConwayGrid.h"
 #include "GOLFile.h"
 
+#include <effolkronium/random.hpp>
+using namespace effolkronium;
+
 #include <algorithm>
 #include <cassert>
 #include <cmath>
@@ -30,18 +33,16 @@
 namespace gol {
 
 ///
-ConwayGrid::ConwayGrid(int width, int height, bool wrapped)
-    : m_width(width)
-    , m_height(height)
+ConwayGrid::ConwayGrid(ScreenSize screenSize, bool wrapped)
+    : m_width(screenSize.first)
+    , m_height(screenSize.second)
     , m_wrapped(wrapped) {
-    for (auto row = 0; row < m_width; ++row) {
-        CellRow cellRow;
-        for (auto col = 0; col < m_height; ++col) {
-            cellRow.emplace_back(row, col, m_width, m_height, m_wrapped);
-        }
-        m_pending.push_back(cellRow);
+    for (auto i = 0; i < m_height; ++i) {
+        auto rando = random_static::get<std::vector>(PTEXT_LIVE, PTEXT_ALT_DEAD, m_width);
+        m_patternArray.emplace_back(rando.begin(), rando.end());
     }
 
+    populatePendingGrid();
     m_snapshot.reserve(m_width * m_height);
 }
 
@@ -54,29 +55,7 @@ ConwayGrid::ConwayGrid(PatternArray patternArray, ScreenSize padding, bool wrapp
     , m_wrapped(wrapped) {
 
     fitGridToWindow();
-
-    auto liveCount = 0;
-    auto row = 0;
-    for (const auto& patternRow : m_patternArray) {
-        auto col = 0;
-        CellRow cellRow;
-        for (const auto& patternCol : patternRow) {
-            bool isAlive = patternCol == PTEXT_LIVE;
-            if (isAlive) {
-                ++liveCount;
-            }
-
-            cellRow.emplace_back(col, row, m_width, m_height, isAlive, m_wrapped);
-            ++col;
-        }
-        m_pending.push_back(cellRow);
-        ++row;
-    }
-
-    std::clog << "Constructed " << m_width << " by " << m_height << " grid, " << liveCount
-              << " live cells, " << m_pending.size() * m_pending[0].size() << " cells overall"
-              << std::endl;
-
+    populatePendingGrid();
     m_snapshot.reserve(m_width * m_height);
 }
 
@@ -159,4 +138,28 @@ void ConwayGrid::fitGridToWindow() {
     }
 }
 
+///
+void ConwayGrid::populatePendingGrid() {
+    auto liveCount = 0;
+    auto row = 0;
+    for (const auto& patternRow : m_patternArray) {
+        auto col = 0;
+        CellRow cellRow{};
+        for (const auto& patternCol : patternRow) {
+            bool isAlive = patternCol == PTEXT_LIVE;
+            if (isAlive) {
+                ++liveCount;
+            }
+
+            cellRow.emplace_back(col, row, m_width, m_height, isAlive, m_wrapped);
+            ++col;
+        }
+        m_pending.push_back(cellRow);
+        ++row;
+    }
+
+    std::clog << "Constructed " << m_width << " by " << m_height << " grid, " << liveCount
+              << " live cells, " << m_pending.size() * m_pending[0].size() << " cells overall"
+              << std::endl;
+}
 }  // namespace gol

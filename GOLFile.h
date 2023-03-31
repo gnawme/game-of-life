@@ -1,6 +1,7 @@
 /// \file GOLFile.h
 /// \author Norm Evangelista
 /// \copyright (c) 2023 Norm Evangelista
+// Copyright 2023 gnawme (Norm Evangelista)
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
@@ -30,6 +31,7 @@ constexpr char CELLS[]{"cells"};
 constexpr char PTEXT_LIVE{'O'};
 constexpr char PTEXT_DEAD{'.'};
 constexpr char PTEXT_DELIM{'!'};
+constexpr char PTEXT_ALT_DEAD{'P'};
 
 constexpr char RLE[]{"rle"};
 constexpr char RLE_LIVE{'o'};

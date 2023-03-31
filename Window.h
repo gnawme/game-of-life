@@ -1,6 +1,7 @@
 /// \file Window.h
 /// \author Norm Evangelista
 /// \copyright (c) 2023 Norm Evangelista
+// Copyright 2023 gnawme (Norm Evangelista)
 //
 // Permission is hereby granted, free of charge, to any person obtaining a copy
 // of this software and associated documentation files (the "Software"), to deal
