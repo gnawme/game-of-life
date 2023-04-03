@@ -1,4 +1,4 @@
-/// \file ConwayDefs.h
+/// \file GOLConfig.cpp
 /// \author Norm Evangelista
 /// \copyright (c) 2023 Norm Evangelista
 // Copyright 2023 gnawme (Norm Evangelista)
@@ -20,31 +20,46 @@
 // LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
-#pragma once
+#include "GOLConfig.h"
 
-#include <string>
-#include <unordered_map>
-#include <vector>
+#include <nlohmann/json.hpp>
+
+#include <fstream>
+#include <iostream>
+#include <sstream>
 
 namespace gol {
-class ConwayCell;
-using CellRow = std::vector<ConwayCell>;
-using CellArray = std::vector<CellRow>;
+///
+GOLConfig::GOLConfig() {
+    std::ifstream golConfig(GOL_CONFIG_NAME);
+    if (!golConfig) {
+        std::clog << "Unable to open config file " << GOL_CONFIG_NAME << ", using fallbacks"
+                  << std::endl;
+        return;
+    }
 
-using PatternArray = std::vector<std::string>;
-using ScreenSize = std::pair<unsigned int, unsigned int>;
+    m_json = json::parse(golConfig);
+    readStateColors();
+}
 
-enum CellPending { CELL_ASLEEP, CELL_LONELY, CELL_CHOKED, CELL_LIVING, CELL_REBORN };
-static std::unordered_map<CellPending, std::string> PENDING_STATE{
-        {CELL_ASLEEP, "CELL_ASLEEP"},
-        {CELL_LONELY, "CELL_LONELY"},
-        {CELL_CHOKED, "CELL_CHOKED"},
-        {CELL_LIVING, "CELL_LIVING"},
-        {CELL_REBORN, "CELL_REBORN"}};
+/// \note PRIVATE
+std::uint32_t GOLConfig::convertStateColor(const char* jsonKey) {
+    auto inValue = m_json[jsonKey];
+    std::stringstream ss;
+    ss << std::hex << inValue;
 
-static constexpr ScreenSize GOL_SCREEN_720P{1280, 720};
-static constexpr float GOL_TILE_SIZE{16.0};
-static constexpr ScreenSize GOL_TILING_720P{
-        static_cast<unsigned int>(GOL_SCREEN_720P.first / GOL_TILE_SIZE),
-        static_cast<unsigned int>(GOL_SCREEN_720P.second / GOL_TILE_SIZE)};
+    std::uint32_t color;
+    ss >> color;
+    return color;
+}
+
+/// \note PRIVATE
+void GOLConfig::readStateColors() {
+    m_colorAsleep = convertStateColor("colorAsleep");
+    m_colorLonely = convertStateColor("colorLonely");
+    m_colorChoked = convertStateColor("colorChoked");
+    m_colorLiving = convertStateColor("colorLiving");
+    m_colorReborn = convertStateColor("colorReborn");
+}
+
 }  // namespace gol

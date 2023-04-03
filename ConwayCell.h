@@ -26,19 +26,11 @@
 
 #include <algorithm>
 #include <iostream>
-#include <unordered_map>
 #include <vector>
 
 namespace gol {
 
-enum CellPending { CELL_ASLEEP, CELL_LONELY, CELL_CHOKED, CELL_LIVING, CELL_REBORN };
-static std::unordered_map<CellPending, std::string> PENDING_STATE{
-        {CELL_ASLEEP, "CELL_ASLEEP"},
-        {CELL_LONELY, "CELL_LONELY"},
-        {CELL_CHOKED, "CELL_CHOKED"},
-        {CELL_LIVING, "CELL_LIVING"},
-        {CELL_REBORN, "CELL_REBORN"}};
-
+///
 class ConwayCell {
 public:
     ConwayCell() = delete;

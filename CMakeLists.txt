@@ -8,7 +8,7 @@ find_library(GTest required)
 include_directories(${GTEST_INCLUDE_DIRS} ${SFML_INCLUDE_DIR})
 
 set(CONWAY_SOURCE MooreNeighbor.h ConwayCell.h ConwayGrid.cpp ConwayGrid.h MooreNeighbor.cpp GOLFile.h GOLFile.cpp ConwayDefs.h)
-set(GAME_SOURCE GameOfLife.cpp GameOfLife.h Window.cpp Window.h main.cpp)
+set(GAME_SOURCE GameOfLife.cpp GameOfLife.h Window.cpp Window.h main.cpp GOLConfig.cpp GOLConfig.h)
 
 add_executable(gol_unit_tests GOLTests.cpp ${CONWAY_SOURCE})
 target_link_libraries(gol_unit_tests -lgtest -lgtest_main pthread)

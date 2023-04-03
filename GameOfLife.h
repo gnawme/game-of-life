@@ -22,6 +22,7 @@
 // SOFTWARE.
 #pragma once
 #include "ConwayGrid.h"
+#include "GOLConfig.h"
 #include "Window.h"
 
 #include <string>
@@ -46,7 +47,8 @@ public:
             std::string_view patternName,
             ConwayGrid grid,
             ScreenSize screenSize,
-            float tileSize);
+            float tileSize,
+            GOLConfig golConfig);
     ~GameOfLife();
 
     void handleInput();
@@ -72,6 +74,7 @@ private:
     Window m_window{};
     ConwayGrid m_conwayGrid;
     float m_tileSize{16.0};
+    GOLConfig m_golConfig;
 
     sf::Clock m_clock{};
     sf::Time m_elapsed{};

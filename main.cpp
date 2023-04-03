@@ -141,7 +141,8 @@ int main(int argc, char** argv) {
 
     auto& [conwayGrid, tiling] = gridTiling.value();
 
-    GameOfLife game(patternName, conwayGrid, GOL_SCREEN_720P, tiling);
+    GOLConfig golConfig;
+    GameOfLife game(patternName, conwayGrid, GOL_SCREEN_720P, tiling, golConfig);
 
     auto* gameWindow = game.getWindow();
     game.render();

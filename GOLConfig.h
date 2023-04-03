@@ -1,4 +1,4 @@
-/// \file ConwayDefs.h
+/// \file GOLConfig.h
 /// \author Norm Evangelista
 /// \copyright (c) 2023 Norm Evangelista
 // Copyright 2023 gnawme (Norm Evangelista)
@@ -21,30 +21,52 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 #pragma once
+#include "ConwayDefs.h"
 
-#include <string>
+#include <nlohmann/json.hpp>
+
+#include <cstdint>
+#include <iosfwd>
 #include <unordered_map>
-#include <vector>
+
+using json = nlohmann::json;
+
+static constexpr char GOL_CONFIG_NAME[]{"gol_config.json"};
+
+static std::uint32_t COLOR_ASLEEP{0X003F5CFF};
+static std::uint32_t COLOR_LONELY{0X58508DFF};
+static std::uint32_t COLOR_CHOKED{0XBC5090FF};
+static std::uint32_t COLOR_LIVING{0XFFA600FF};
+static std::uint32_t COLOR_REBORN{0XFF6361FF};
 
 namespace gol {
-class ConwayCell;
-using CellRow = std::vector<ConwayCell>;
-using CellArray = std::vector<CellRow>;
+///
+class GOLConfig {
+public:
+    GOLConfig();
+    ~GOLConfig() = default;
 
-using PatternArray = std::vector<std::string>;
-using ScreenSize = std::pair<unsigned int, unsigned int>;
+    std::uint32_t getCellColor(CellPending cellPending) {
+        return m_cellColors[cellPending];
+    }
 
-enum CellPending { CELL_ASLEEP, CELL_LONELY, CELL_CHOKED, CELL_LIVING, CELL_REBORN };
-static std::unordered_map<CellPending, std::string> PENDING_STATE{
-        {CELL_ASLEEP, "CELL_ASLEEP"},
-        {CELL_LONELY, "CELL_LONELY"},
-        {CELL_CHOKED, "CELL_CHOKED"},
-        {CELL_LIVING, "CELL_LIVING"},
-        {CELL_REBORN, "CELL_REBORN"}};
+private:
+    std::uint32_t convertStateColor(const char* jsonKey);
+    void readStateColors();
 
-static constexpr ScreenSize GOL_SCREEN_720P{1280, 720};
-static constexpr float GOL_TILE_SIZE{16.0};
-static constexpr ScreenSize GOL_TILING_720P{
-        static_cast<unsigned int>(GOL_SCREEN_720P.first / GOL_TILE_SIZE),
-        static_cast<unsigned int>(GOL_SCREEN_720P.second / GOL_TILE_SIZE)};
+    json m_json{};
+
+    std::uint32_t m_colorAsleep{COLOR_ASLEEP};
+    std::uint32_t m_colorLonely{COLOR_LONELY};
+    std::uint32_t m_colorChoked{COLOR_CHOKED};
+    std::uint32_t m_colorLiving{COLOR_LIVING};
+    std::uint32_t m_colorReborn{COLOR_REBORN};
+
+    std::unordered_map<CellPending, std::uint32_t> m_cellColors{
+            {CELL_ASLEEP, m_colorAsleep},
+            {CELL_LONELY, m_colorLonely},
+            {CELL_CHOKED, m_colorChoked},
+            {CELL_LIVING, m_colorLiving},
+            {CELL_REBORN, m_colorReborn}};
+};
 }  // namespace gol

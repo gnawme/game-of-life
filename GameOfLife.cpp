@@ -22,6 +22,8 @@
 // SOFTWARE.
 #include "GameOfLife.h"
 
+#include "GOLConfig.h"
+
 #include <cassert>
 #include <cmath>
 #include <iostream>
@@ -32,10 +34,12 @@ GameOfLife::GameOfLife(
         std::string_view patternName,
         ConwayGrid grid,
         ScreenSize screenSize,
-        float tileSize)
+        float tileSize,
+        GOLConfig golConfig)
     : m_window(patternName, {screenSize.first, screenSize.second})
     , m_conwayGrid(std::move(grid))
-    , m_tileSize(tileSize) {
+    , m_tileSize(tileSize)
+    , m_golConfig(std::move(golConfig)) {
     restartClock();
     generateGrid();
 }
@@ -121,7 +125,7 @@ sf::RectangleShape GameOfLife::genLifeCell(
         const sf::Vector2f& cellSize) {
     sf::RectangleShape cell(cellSize);
     cell.setPosition(cellPosition);
-    cell.setFillColor(m_cellColors[currentCell.getPendingState()]);
+    cell.setFillColor(sf::Color(m_golConfig.getCellColor(currentCell.getPendingState())));
 
     return cell;
 }
@@ -135,7 +139,7 @@ void GameOfLife::updateGrid() {
         for (auto& cell : cellRow) {
             auto currentCell = cells[row][col];
             auto pendingState = currentCell.getPendingState();
-            cell.setFillColor(m_cellColors[pendingState]);
+            cell.setFillColor(sf::Color(m_golConfig.getCellColor(pendingState)));
             ++col;
         }
         ++row;
