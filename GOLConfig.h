@@ -33,11 +33,11 @@ using json = nlohmann::json;
 
 static constexpr char GOL_CONFIG_NAME[]{"gol_config.json"};
 
-static std::uint32_t COLOR_ASLEEP{0X003F5CFF};
-static std::uint32_t COLOR_LONELY{0X58508DFF};
-static std::uint32_t COLOR_CHOKED{0XBC5090FF};
-static std::uint32_t COLOR_LIVING{0XFFA600FF};
-static std::uint32_t COLOR_REBORN{0XFF6361FF};
+static constexpr std::uint32_t COLOR_ASLEEP{0X003F5CFF};
+static constexpr std::uint32_t COLOR_LONELY{0X58508DFF};
+static constexpr std::uint32_t COLOR_CHOKED{0XBC5090FF};
+static constexpr std::uint32_t COLOR_LIVING{0XFFA600FF};
+static constexpr std::uint32_t COLOR_REBORN{0XFF6361FF};
 
 namespace gol {
 ///

@@ -1,9 +1,9 @@
 {
   "stateColors": {
-    "colorAsleep" : "0X003F5CFF",
-    "colorLonely" : "0X58508DFF",
-    "colorChoked" : "0XBC5090FF",
-    "colorLiving" : "0XFFA600FF",
-    "colorReborn" : "0XFF6361FF"
+    "colorAsleep" : "0x003F5CFF",
+    "colorLonely" : "0x58508DFF",
+    "colorChoked" : "0xBC5090FF",
+    "colorLiving" : "0xFFA600FF",
+    "colorReborn" : "0xFF6361FF"
   }
 }

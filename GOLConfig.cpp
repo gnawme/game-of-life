@@ -26,7 +26,6 @@
 
 #include <fstream>
 #include <iostream>
-#include <sstream>
 
 namespace gol {
 ///
@@ -39,16 +38,17 @@ GOLConfig::GOLConfig() {
     }
 
     m_json = json::parse(golConfig);
+    std::clog << m_json.dump(4) << std::endl;
     readStateColors();
 }
 
 /// \note PRIVATE
 std::uint32_t GOLConfig::convertStateColor(const char* jsonKey) {
-    auto inValue = m_json[jsonKey];
+    auto inValue = m_json["stateColors"][jsonKey];
     std::stringstream ss;
-    ss << std::hex << inValue;
+    ss << std::hex << inValue.get<std::string>();
 
-    std::uint32_t color;
+    std::uint32_t color{0};
     ss >> color;
     return color;
 }
@@ -56,10 +56,19 @@ std::uint32_t GOLConfig::convertStateColor(const char* jsonKey) {
 /// \note PRIVATE
 void GOLConfig::readStateColors() {
     m_colorAsleep = convertStateColor("colorAsleep");
+    m_cellColors[CELL_ASLEEP] = m_colorAsleep;
+
     m_colorLonely = convertStateColor("colorLonely");
+    m_cellColors[CELL_LONELY] = m_colorLonely;
+
     m_colorChoked = convertStateColor("colorChoked");
+    m_cellColors[CELL_LONELY] = m_colorChoked;
+
     m_colorLiving = convertStateColor("colorLiving");
+    m_cellColors[CELL_LIVING] = m_colorLiving;
+
     m_colorReborn = convertStateColor("colorReborn");
+    m_cellColors[CELL_REBORN] = m_colorReborn;
 }
 
 }  // namespace gol
