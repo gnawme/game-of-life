@@ -40,6 +40,7 @@ GOLConfig::GOLConfig() {
     m_json = json::parse(golConfig);
     readStateColors();
     readDisplayParams();
+    readLifeTick();
 }
 
 /// \note PRIVATE
@@ -93,6 +94,15 @@ void GOLConfig::readDisplayParams() {
     std::clog << "Screen size " << m_screenSize.first << "x" << m_screenSize.second << std::endl;
     std::clog << "Tile size " << m_tileSize << std::endl;
     computeScreenTiling();
+}
+
+void GOLConfig::readLifeTick() {
+    auto inValue = m_json["lifeTickInSecs"];
+    std::stringstream ss;
+    ss << inValue.get<std::string>();
+
+    ss >> m_lifeTick;
+    std::clog << "Life tick " << m_lifeTick << std::endl;
 }
 
 /// \note PRIVATE

@@ -46,6 +46,8 @@ static constexpr ScreenSize GOL_TILING_720P{
         static_cast<unsigned int>(GOL_SCREEN_720P.first / GOL_TILE_SIZE),
         static_cast<unsigned int>(GOL_SCREEN_720P.second / GOL_TILE_SIZE)};
 
+static constexpr float GOL_LIFE_TICK(0.5);
+
 ///
 class GOLConfig {
 public:
@@ -54,6 +56,10 @@ public:
 
     std::uint32_t getCellColor(CellPending cellPending) {
         return m_cellColors[cellPending];
+    }
+
+    float getLifeTick() const {
+        return m_lifeTick;
     }
 
     ScreenSize getScreenSize() const {
@@ -79,6 +85,7 @@ private:
     std::uint32_t convertStateColor(const char* jsonKey);
     float convertTileSize(const char* jsonKey);
     void readDisplayParams();
+    void readLifeTick();
     void readStateColors();
 
     json m_json{};
@@ -99,5 +106,6 @@ private:
     ScreenSize m_screenSize{GOL_SCREEN_720P};
     float m_tileSize{GOL_TILE_SIZE};
     ScreenSize m_screenTiling{GOL_TILING_720P};
+    float m_lifeTick{GOL_LIFE_TICK};
 };
 }  // namespace gol

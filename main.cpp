@@ -157,8 +157,8 @@ int main(int argc, char** argv) {
     while (!gameWindow->isDone()) {
         game.handleInput();
 
-        constexpr sf::Time LIFE_TICK{sf::seconds(0.5)};
-        if (game.getElapsed() >= LIFE_TICK) {
+        sf::Time lifeTick{sf::seconds(golConfig.getLifeTick())};
+        if (game.getElapsed() >= lifeTick) {
             game.update();
             game.render();
             game.restartClock();
