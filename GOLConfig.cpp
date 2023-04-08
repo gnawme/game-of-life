@@ -38,8 +38,28 @@ GOLConfig::GOLConfig() {
     }
 
     m_json = json::parse(golConfig);
-    std::clog << m_json.dump(4) << std::endl;
     readStateColors();
+    readDisplayParams();
+}
+
+/// \note PRIVATE
+void GOLConfig::computeScreenTiling() {
+    m_screenTiling = std::make_pair(
+            static_cast<unsigned int>(m_screenSize.first / m_tileSize),
+            static_cast<unsigned int>(m_screenSize.second / m_tileSize));
+    std::clog << "Set screen tiling to " << m_screenTiling.first << "x" << m_screenTiling.second
+              << std::endl;
+}
+
+/// \note PRIVATE
+std::uint32_t GOLConfig::convertDisplayParam(const char* jsonKey) {
+    auto inValue = m_json["displayParams"][jsonKey];
+    std::stringstream ss;
+    ss << inValue.get<std::string>();
+
+    std::uint32_t param{0};
+    ss >> param;
+    return param;
 }
 
 /// \note PRIVATE
@@ -51,6 +71,28 @@ std::uint32_t GOLConfig::convertStateColor(const char* jsonKey) {
     std::uint32_t color{0};
     ss >> color;
     return color;
+}
+
+/// \note PRIVATE
+float GOLConfig::convertTileSize(const char* jsonKey) {
+    auto inValue = m_json["displayParams"][jsonKey];
+    std::stringstream ss;
+    ss << inValue.get<std::string>();
+
+    float tileSize{0.0};
+    ss >> tileSize;
+    return tileSize;
+}
+
+/// \note PRIVATE
+void GOLConfig::readDisplayParams() {
+    m_screenSize = std::make_pair(
+            convertDisplayParam("widthInPixels"), convertDisplayParam("heightInPixels"));
+
+    m_tileSize = convertTileSize("tileSize");
+    std::clog << "Screen size " << m_screenSize.first << "x" << m_screenSize.second << std::endl;
+    std::clog << "Tile size " << m_tileSize << std::endl;
+    computeScreenTiling();
 }
 
 /// \note PRIVATE

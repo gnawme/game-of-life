@@ -22,6 +22,7 @@
 // SOFTWARE.
 #include "ConwayCell.h"
 #include "ConwayGrid.h"
+#include "GOLConfig.h"
 #include "GOLFile.h"
 
 #include <gtest/gtest.h>

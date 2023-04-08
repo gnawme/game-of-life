@@ -35,15 +35,18 @@ using namespace gol;
 
 namespace {
 ///
-std::optional<float> fitPatternToScreenSize(const PatternArray& patternArray) {
+std::optional<float>
+fitPatternToScreenSize(const PatternArray& patternArray, GOLConfig& golConfig) {
     auto numCols = patternArray[0].length();
     auto numRows = patternArray.size();
 
-    auto tileSize = GOL_TILE_SIZE;
+    auto tileSize = golConfig.getTileSize();
     auto maxCols = numCols * tileSize;
     auto maxRows = patternArray.size() * tileSize;
 
-    while (maxCols > GOL_SCREEN_720P.first || maxRows > GOL_SCREEN_720P.second) {
+    ScreenSize screenSize = golConfig.getScreenSize();
+
+    while (maxCols > screenSize.first || maxRows > screenSize.second) {
         tileSize /= 2;
         if (tileSize == 1) {
             return std::nullopt;
@@ -58,7 +61,7 @@ std::optional<float> fitPatternToScreenSize(const PatternArray& patternArray) {
 
 ///
 std::optional<std::pair<ConwayGrid, float>>
-generateGridFromPatternFile(std::string& patternName, bool wrappedGrid) {
+generateGridFromPatternFile(std::string& patternName, GOLConfig& golConfig, bool wrappedGrid) {
     GOLFile patternFile(patternName);
     std::clog << "Opened pattern file " << patternFile.getFilename() << std::endl;
 
@@ -75,23 +78,26 @@ generateGridFromPatternFile(std::string& patternName, bool wrappedGrid) {
 
     std::clog << "Read Conway grid of " << patternArray.size() << " rows, "
               << patternArray[0].length() << " cols" << std::endl;
-    auto tileSize = fitPatternToScreenSize(patternArray);
+    auto tileSize = fitPatternToScreenSize(patternArray, golConfig);
     if (!tileSize.has_value()) {
         std::cerr << patternFile.getFilename() << " is larger than currently supported"
                   << std::endl;
         return std::nullopt;
     }
 
+    ScreenSize screenSize = golConfig.getScreenSize();
     ScreenSize tiling = {
-            static_cast<unsigned int>(GOL_SCREEN_720P.first / tileSize.value()),
-            static_cast<unsigned int>(GOL_SCREEN_720P.second / tileSize.value())};
+            static_cast<unsigned int>(screenSize.first / tileSize.value()),
+            static_cast<unsigned int>(screenSize.second / tileSize.value())};
 
     return std::make_pair(ConwayGrid(patternArray, tiling, wrappedGrid), tileSize.value());
 }
 
 ///
-std::optional<std::pair<ConwayGrid, float>> generateRandomSoup(bool wrappedGrid) {
-    return std::make_pair(ConwayGrid(GOL_TILING_720P, wrappedGrid), GOL_TILE_SIZE);
+std::optional<std::pair<ConwayGrid, float>>
+generateRandomSoup(GOLConfig& golConfig, bool wrappedGrid) {
+    return std::make_pair(
+            ConwayGrid(golConfig.getScreenTiling(), wrappedGrid), golConfig.getTileSize());
 }
 
 ///
@@ -132,17 +138,17 @@ int main(int argc, char** argv) {
         patternName = ss.str();
     }
 
-    auto gridTiling = !randomSoup ? generateGridFromPatternFile(patternName, wrappedGrid)
-                                  : generateRandomSoup(wrappedGrid);
+    GOLConfig golConfig;
+    auto gridTiling = !randomSoup ? generateGridFromPatternFile(patternName, golConfig, wrappedGrid)
+                                  : generateRandomSoup(golConfig, wrappedGrid);
 
     if (!gridTiling.has_value()) {
         EXIT_FAILURE;
     }
 
-    auto& [conwayGrid, tiling] = gridTiling.value();
-
-    GOLConfig golConfig;
-    GameOfLife game(patternName, conwayGrid, GOL_SCREEN_720P, tiling, golConfig);
+    auto& [conwayGrid, tileSize] = gridTiling.value();
+    golConfig.setTileSize(tileSize);
+    GameOfLife game(patternName, conwayGrid, golConfig.getScreenSize(), tileSize, golConfig);
 
     auto* gameWindow = game.getWindow();
     game.render();

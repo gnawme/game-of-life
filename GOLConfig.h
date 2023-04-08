@@ -31,6 +31,7 @@
 
 using json = nlohmann::json;
 
+namespace gol {
 static constexpr char GOL_CONFIG_NAME[]{"gol_config.json"};
 
 static constexpr std::uint32_t COLOR_ASLEEP{0X003F5CFF};
@@ -39,7 +40,12 @@ static constexpr std::uint32_t COLOR_CHOKED{0XBC5090FF};
 static constexpr std::uint32_t COLOR_LIVING{0XFFA600FF};
 static constexpr std::uint32_t COLOR_REBORN{0XFF6361FF};
 
-namespace gol {
+static constexpr ScreenSize GOL_SCREEN_720P{1280, 720};
+static constexpr float GOL_TILE_SIZE{16.0};
+static constexpr ScreenSize GOL_TILING_720P{
+        static_cast<unsigned int>(GOL_SCREEN_720P.first / GOL_TILE_SIZE),
+        static_cast<unsigned int>(GOL_SCREEN_720P.second / GOL_TILE_SIZE)};
+
 ///
 class GOLConfig {
 public:
@@ -50,8 +56,29 @@ public:
         return m_cellColors[cellPending];
     }
 
+    ScreenSize getScreenSize() const {
+        return m_screenSize;
+    }
+
+    ScreenSize getScreenTiling() const {
+        return m_screenTiling;
+    }
+
+    float getTileSize() const {
+        return m_tileSize;
+    }
+
+    void setTileSize(float tileSize) {
+        m_tileSize = tileSize;
+        computeScreenTiling();
+    }
+
 private:
+    void computeScreenTiling();
+    std::uint32_t convertDisplayParam(const char* jsonKey);
     std::uint32_t convertStateColor(const char* jsonKey);
+    float convertTileSize(const char* jsonKey);
+    void readDisplayParams();
     void readStateColors();
 
     json m_json{};
@@ -68,5 +95,9 @@ private:
             {CELL_CHOKED, m_colorChoked},
             {CELL_LIVING, m_colorLiving},
             {CELL_REBORN, m_colorReborn}};
+
+    ScreenSize m_screenSize{GOL_SCREEN_720P};
+    float m_tileSize{GOL_TILE_SIZE};
+    ScreenSize m_screenTiling{GOL_TILING_720P};
 };
 }  // namespace gol

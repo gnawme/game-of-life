@@ -32,12 +32,6 @@ namespace gol {
 using RectangleShapeRow = std::vector<sf::RectangleShape>;
 using RectangleShapeArray = std::vector<RectangleShapeRow>;
 
-constexpr sf::Color COLOR_ASLEEP{0X003F5CFF};
-constexpr sf::Color COLOR_LONELY{0X58508DFF};
-constexpr sf::Color COLOR_CHOKED{0XBC5090FF};
-constexpr sf::Color COLOR_LIVING{0XFFA600FF};
-constexpr sf::Color COLOR_REBORN{0XFF6361FF};
-
 constexpr float GAME_INTERVAL{1.0};
 
 ///
@@ -79,12 +73,5 @@ private:
     sf::Clock m_clock{};
     sf::Time m_elapsed{};
     RectangleShapeArray m_cellRectangles;
-
-    std::unordered_map<CellPending, sf::Color> m_cellColors{
-            {CELL_ASLEEP, COLOR_ASLEEP},
-            {CELL_LONELY, COLOR_LONELY},
-            {CELL_CHOKED, COLOR_CHOKED},
-            {CELL_LIVING, COLOR_LIVING},
-            {CELL_REBORN, COLOR_REBORN}};
 };
 }  // namespace gol
