@@ -38,7 +38,7 @@ constexpr float GAME_INTERVAL{1.0};
 class GameOfLife {
 public:
     GameOfLife(
-            std::string_view patternName,
+            std::string& patternName,
             ConwayGrid grid,
             ScreenSize screenSize,
             float tileSize,

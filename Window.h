@@ -22,6 +22,7 @@
 // SOFTWARE.
 #pragma once
 #include <SFML/Graphics.hpp>
+#include <SFML/System/String.hpp>
 #include <SFML/Window.hpp>
 
 #include <string>
@@ -30,7 +31,7 @@ namespace gol {
 class Window {
 public:
     Window();
-    Window(std::string_view title, const sf::Vector2u& size);
+    Window(std::string& title, const sf::Vector2u& size);
     ~Window();
 
     void beginDraw();
@@ -52,7 +53,7 @@ private:
 
     sf::RenderWindow m_window{};
     sf::Vector2u m_windowSize{640, 640};
-    std::string m_windowTitle{"Window"};
+    sf::String m_windowTitle{"Window"};
     bool m_isDone{false};
     bool m_isFullscreen{false};
 };

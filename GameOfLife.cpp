@@ -31,12 +31,12 @@
 namespace gol {
 ///
 GameOfLife::GameOfLife(
-        std::string_view patternName,
+        std::string& patternName,
         ConwayGrid grid,
         ScreenSize screenSize,
         float tileSize,
         GOLConfig golConfig)
-    : m_window(patternName, {screenSize.first, screenSize.second})
+    : m_window(patternName, sf::Vector2u(screenSize.first, screenSize.second))
     , m_conwayGrid(std::move(grid))
     , m_tileSize(tileSize)
     , m_golConfig(std::move(golConfig)) {

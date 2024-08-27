@@ -29,7 +29,7 @@ Window::Window() {
 }
 
 ///
-Window::Window(std::string_view title, const sf::Vector2u& size)
+Window::Window(std::string& title, const sf::Vector2u& size)
     : m_windowTitle(title)
     , m_windowSize(size) {
     create();
@@ -42,8 +42,12 @@ Window::~Window() {
 
 ///
 void Window::create() {
-    auto style = (m_isFullscreen ? sf::Style::Fullscreen : sf::Style::Default);
-    m_window.create(sf::VideoMode({m_windowSize.x, m_windowSize.y}), m_windowTitle, style);
+    auto state = (m_isFullscreen ? sf::State::Fullscreen : sf::State::Windowed);
+    m_window.create(
+            sf::VideoMode({m_windowSize.x, m_windowSize.y}),
+            m_windowTitle,
+            sf::Style::Default,
+            state);
 }
 
 ///
@@ -90,14 +94,13 @@ void Window::toggleFullScreen() {
 
 ///
 void Window::update() {
-    sf::Event event;
-    while (m_window.pollEvent(event)) {
-        if (event.type == sf::Event::Closed) {
+    while (const std::optional event = m_window.pollEvent()) {
+        if (event->is<sf::Event::Closed>()) {
             m_isDone = true;
-        } else if (event.type == sf::Event::KeyPressed) {
-            if (event.key.code == sf::Keyboard::F5) {
+        } else if (const auto* keyPressed = event->getIf<sf::Event::KeyPressed>()) {
+            if (keyPressed->code == sf::Keyboard::Key::F5) {
                 toggleFullScreen();
-            } else if (event.key.code == sf::Keyboard::Escape) {
+            } else if (keyPressed->code == sf::Keyboard::Key::Escape) {
                 m_isDone = true;
             }
         }
