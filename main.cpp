@@ -65,10 +65,9 @@ generateGridFromPatternFile(std::string& patternName, GOLConfig& golConfig, bool
     GOLFile patternFile(patternName);
     std::clog << "Opened pattern file " << patternFile.getFilename() << std::endl;
 
-    auto lastSlash = patternName.find_last_of('/');
-    if (lastSlash != std::string::npos) {
-        patternName = patternName.substr(lastSlash + 1);
-    }
+    namespace fs = std::filesystem;
+    fs::path patternPath(patternName);
+    patternName = patternPath.filename().string();
 
     PatternArray patternArray = patternFile.getPatternArray();
     if (patternArray.empty()) {

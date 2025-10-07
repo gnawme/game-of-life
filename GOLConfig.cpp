@@ -30,10 +30,21 @@
 namespace gol {
 ///
 GOLConfig::GOLConfig() {
-    std::ifstream golConfig(GOL_CONFIG_NAME);
+    namespace fs = std::filesystem;
+
+    fs::path configPath(GOL_CONFIG_NAME);
+
+    // Check if file exists first
+    if (!fs::exists(configPath)) {
+        std::clog << "Config file not found: " << configPath << ", using fallbacks" << std::endl;
+        return;
+    }
+
+    std::clog << "Loading config from: " << fs::absolute(configPath) << std::endl;
+
+    std::ifstream golConfig(configPath);
     if (!golConfig) {
-        std::clog << "Unable to open config file " << GOL_CONFIG_NAME << ", using fallbacks"
-                  << std::endl;
+        std::clog << "Unable to open config file, using fallbacks" << std::endl;
         return;
     }
 

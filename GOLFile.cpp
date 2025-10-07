@@ -24,6 +24,7 @@
 
 #include <algorithm>
 #include <cctype>
+#include <filesystem>
 #include <fstream>
 #include <iostream>
 #include <limits>
@@ -74,11 +75,14 @@ PatternArray GOLFile::readPatternFile(const std::string& filename) {
 
 /// \note PRIVATE
 std::string GOLFile::getExtension(const std::string& patternFileName) {
-    auto dot = patternFileName.find_last_of('.');
-    if (dot != std::string::npos) {
-        return {patternFileName.substr(dot + 1)};
-    }
+    namespace fs = std::filesystem;
+    fs::path filePath(patternFileName);
 
+    // extension() includes the dot, so remove it
+    std::string ext = filePath.extension().string();
+    if (!ext.empty() && ext[0] == '.') {
+        return ext.substr(1);
+    }
     return {};
 }
 
@@ -105,6 +109,27 @@ std::size_t GOLFile::prescanPlaintext(std::ifstream& pattern) {
 /// \note PRIVATE
 /// \see https://conwaylife.com/wiki/Plaintext
 PatternArray GOLFile::readPlaintextPatternFile(const std::string& filename) {
+    namespace fs = std::filesystem;
+
+    // Check file exists before attempting to open
+    if (!fs::exists(filename)) {
+        std::cerr << "Pattern file does not exist: " << filename << std::endl;
+        return {};
+    }
+
+    // Check it's a regular file
+    if (!fs::is_regular_file(filename)) {
+        std::cerr << "Path is not a regular file: " << filename << std::endl;
+        return {};
+    }
+
+    // Check file size
+    auto fileSize = fs::file_size(filename);
+    if (fileSize == 0) {
+        std::cerr << "Pattern file is empty: " << filename << std::endl;
+        return {};
+    }
+
     std::ifstream pattern(filename);
     if (pattern) {
         auto maxLineLen = prescanPlaintext(pattern);
@@ -140,6 +165,27 @@ PatternArray GOLFile::readPlaintextPatternFile(const std::string& filename) {
 /// \note PRIVATE
 /// \see https://conwaylife.com/wiki/Run_Length_Encoded
 PatternArray GOLFile::readRLEPatternFile(const std::string& filename) {
+    namespace fs = std::filesystem;
+
+    // Check file exists before attempting to open
+    if (!fs::exists(filename)) {
+        std::cerr << "Pattern file does not exist: " << filename << std::endl;
+        return {};
+    }
+
+    // Check it's a regular file
+    if (!fs::is_regular_file(filename)) {
+        std::cerr << "Path is not a regular file: " << filename << std::endl;
+        return {};
+    }
+
+    // Check file size
+    auto fileSize = fs::file_size(filename);
+    if (fileSize == 0) {
+        std::cerr << "Pattern file is empty: " << filename << std::endl;
+        return {};
+    }
+
     std::ifstream pattern(filename);
     if (pattern) {
         PatternArray grid;
