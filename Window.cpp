@@ -21,6 +21,7 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 #include "Window.h"
+#include "SFML/Window/Keyboard.hpp"
 
 namespace gol {
 ///
@@ -43,11 +44,7 @@ Window::~Window() {
 ///
 void Window::create() {
     auto state = (m_isFullscreen ? sf::State::Fullscreen : sf::State::Windowed);
-    m_window.create(
-            sf::VideoMode({m_windowSize.x, m_windowSize.y}),
-            m_windowTitle,
-            sf::Style::Default,
-            state);
+    m_window.create(sf::VideoMode({m_windowSize.x, m_windowSize.y}), m_windowTitle, state);
 }
 
 ///

@@ -114,6 +114,9 @@ int main(int argc, char** argv) {
         EXIT_FAILURE;
     }
 
+    std::clog << "SFML Version: " << SFML_VERSION_MAJOR << "." << SFML_VERSION_MINOR << "."
+              << SFML_VERSION_PATCH << std::endl;
+
     cxxopts::Options options("game_of_life", "Conway's Game of Life in C++ and SFML");
     options.add_options()(
             "wrapped",
@@ -151,7 +154,7 @@ int main(int argc, char** argv) {
 
     auto* gameWindow = game.getWindow();
     game.render();
-    sf::sleep({sf::seconds(1.0)});
+    sf::sleep(sf::seconds(1.0f));
 
     while (!gameWindow->isDone()) {
         game.handleInput();
