@@ -21,15 +21,20 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 #include "GOLFile.h"
+#include "ConwayDefs.h"
 
 #include <algorithm>
 #include <cctype>
+#include <cstddef>
+#include <cstdio>
 #include <filesystem>
 #include <fstream>
 #include <iostream>
+#include <iterator>
 #include <limits>
 #include <sstream>
 #include <string>
+#include <vector>
 
 namespace gol {
 

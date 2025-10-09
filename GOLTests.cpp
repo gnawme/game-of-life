@@ -24,6 +24,7 @@
 #include "ConwayGrid.h"
 #include "GOLConfig.h"
 #include "GOLFile.h"
+#include "MooreNeighbor.h"
 
 #include <gtest/gtest.h>
 

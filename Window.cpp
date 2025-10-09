@@ -21,7 +21,13 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 #include "Window.h"
+#include "SFML/Graphics/Drawable.hpp"
+#include "SFML/System/Vector2.hpp"
 #include "SFML/Window/Keyboard.hpp"
+#include "SFML/Window/VideoMode.hpp"
+#include "SFML/Window/WindowEnums.hpp"
+#include <optional>
+#include <string>
 
 namespace gol {
 ///

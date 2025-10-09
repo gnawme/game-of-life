@@ -9,8 +9,11 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 list(APPEND CMAKE_PREFIX_PATH ${CMAKE_BINARY_DIR})
 list(APPEND CMAKE_MODULE_PATH ${CMAKE_BINARY_DIR})
 
+
 # Include FetchContent module
 include(FetchContent)
+
+set(BUILD_TESTING OFF CACHE BOOL "" FORCE)
 
 # Fetch SFML 3.0
 FetchContent_Declare(

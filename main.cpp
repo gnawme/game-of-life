@@ -20,16 +20,26 @@
 // LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
+#include "ConwayDefs.h"
 #include "ConwayGrid.h"
+#include "GOLConfig.h"
 #include "GOLFile.h"
 #include "GameOfLife.h"
+#include "SFML/Config.hpp"
+#include "SFML/System/Sleep.hpp"
+#include "SFML/System/Time.hpp"
 
+#include <cstdint>
+#include <cstdlib>
 #include <cxxopts.hpp>
 
 #include <chrono>
+#include <filesystem>
 #include <iostream>
 #include <optional>
 #include <sstream>
+#include <string>
+#include <utility>
 
 using namespace gol;
 

@@ -22,11 +22,19 @@
 // SOFTWARE.
 #include "GameOfLife.h"
 
+#include "ConwayCell.h"
+#include "ConwayDefs.h"
+#include "ConwayGrid.h"
 #include "GOLConfig.h"
+#include "SFML/Graphics/Color.hpp"
+#include "SFML/Graphics/RectangleShape.hpp"
+#include "SFML/System/Time.hpp"
+#include "SFML/System/Vector2.hpp"
 
 #include <cassert>
 #include <cmath>
-#include <iostream>
+#include <string>
+#include <utility>
 
 namespace gol {
 ///
