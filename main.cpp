@@ -20,17 +20,10 @@
 // LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
-#include "ConwayDefs.h"
 #include "ConwayGrid.h"
-#include "GOLConfig.h"
 #include "GOLFile.h"
 #include "GameOfLife.h"
-#include "SFML/Config.hpp"
-#include "SFML/System/Sleep.hpp"
-#include "SFML/System/Time.hpp"
 
-#include <cstdint>
-#include <cstdlib>
 #include <cxxopts.hpp>
 
 #include <chrono>
@@ -38,8 +31,6 @@
 #include <iostream>
 #include <optional>
 #include <sstream>
-#include <string>
-#include <utility>
 
 using namespace gol;
 
@@ -72,10 +63,23 @@ fitPatternToScreenSize(const PatternArray& patternArray, GOLConfig& golConfig) {
 ///
 std::optional<std::pair<ConwayGrid, float>>
 generateGridFromPatternFile(std::string& patternName, GOLConfig& golConfig, bool wrappedGrid) {
+    namespace fs = std::filesystem;
+
+    // Check if file exists before attempting to open
+    if (!fs::exists(patternName)) {
+        std::cerr << "Error: Pattern file does not exist: " << patternName << std::endl;
+        return std::nullopt;
+    }
+
+    if (!fs::is_regular_file(patternName)) {
+        std::cerr << "Error: Path is not a regular file: " << patternName << std::endl;
+        return std::nullopt;
+    }
+
     GOLFile patternFile(patternName);
     std::clog << "Opened pattern file " << patternFile.getFilename() << std::endl;
 
-    namespace fs = std::filesystem;
+    // Extract just the filename for the window title
     fs::path patternPath(patternName);
     patternName = patternPath.filename().string();
 
@@ -115,65 +119,131 @@ std::uint64_t getTimestamp() {
                    std::chrono::system_clock::now().time_since_epoch())
             .count();
 }
+
+///
+void printUsage() {
+    std::cout << "\n";
+    std::cout << "Conway's Game of Life - Modern C++ Implementation with SFML Graphics\n";
+    std::cout << "====================================================================\n\n";
+    std::cout << "USAGE:\n";
+    std::cout << "  game_of_life <pattern-file> [OPTIONS]\n";
+    std::cout << "  game_of_life --random [OPTIONS]\n\n";
+    std::cout << "DESCRIPTION:\n";
+    std::cout << "  Simulates Conway's Game of Life with colorized cell transitions.\n";
+    std::cout << "  Supports plaintext (.cells) and RLE (.rle) pattern formats.\n\n";
+    std::cout << "ARGUMENTS:\n";
+    std::cout << "  <pattern-file>    Path to a pattern file (.cells or .rle format)\n";
+    std::cout << "                    Example: ./patterns/glider.cells\n\n";
+    std::cout << "OPTIONS:\n";
+    std::cout << "  --random          Generate a random soup instead of loading a pattern\n";
+    std::cout << "  --wrapped         Enable wrapped/toroidal grid (infinite plane)\n";
+    std::cout << "                    Default: bounded grid with edges\n";
+    std::cout << "  -h, --help        Display this help message and exit\n\n";
+    std::cout << "INTERACTIVE CONTROLS:\n";
+    std::cout << "  F5                Toggle fullscreen mode\n";
+    std::cout << "  ESC               Exit the simulation\n\n";
+    std::cout << "CONFIGURATION:\n";
+    std::cout << "  Display parameters and cell colors can be customized via gol_config.json\n";
+    std::cout << "  in the application directory.\n\n";
+    std::cout << "EXAMPLES:\n";
+    std::cout << "  # Run with a pattern file\n";
+    std::cout << "  game_of_life patterns/glider.cells\n\n";
+    std::cout << "  # Run with wrapped grid (infinite plane)\n";
+    std::cout << "  game_of_life patterns/gosper_glider_gun.rle --wrapped\n\n";
+    std::cout << "  # Generate a random soup\n";
+    std::cout << "  game_of_life --random\n\n";
+    std::cout << "  # Random soup with wrapped grid\n";
+    std::cout << "  game_of_life --random --wrapped\n\n";
+    std::cout << "PATTERN FORMATS:\n";
+    std::cout << "  Plaintext (.cells): https://conwaylife.com/wiki/Plaintext\n";
+    std::cout << "  RLE (.rle):         https://conwaylife.com/wiki/Run_Length_Encoded\n\n";
+}
 }  // namespace
 
 ///
 int main(int argc, char** argv) {
-    if (argc == 1) {
-        std::cerr << "usage: game_of_life <pattern-file-name> [--wrapped]" << std::endl;
-        EXIT_FAILURE;
-    }
+    try {
+        cxxopts::Options options("game_of_life", "Conway's Game of Life in C++ and SFML");
 
-    std::clog << "SFML Version: " << SFML_VERSION_MAJOR << "." << SFML_VERSION_MINOR << "."
-              << SFML_VERSION_PATCH << std::endl;
+        options.add_options()("h,help", "Show help message")(
+                "wrapped",
+                "Set grid to wrap at its edges (infinite plane)",
+                cxxopts::value<bool>()->default_value("false"))(
+                "random", "Create a random soup", cxxopts::value<bool>()->default_value("false"))(
+                "pattern", "Pattern file to load", cxxopts::value<std::string>())(
+                "positional", "Positional arguments", cxxopts::value<std::vector<std::string>>());
 
-    cxxopts::Options options("game_of_life", "Conway's Game of Life in C++ and SFML");
-    options.add_options()(
-            "wrapped",
-            "Set grid to wrap at its edges",
-            cxxopts::value<bool>()->default_value("false"))(
-            "random", "Create a random soup", cxxopts::value<bool>()->default_value("false"));
+        options.parse_positional({"pattern", "positional"});
+        options.positional_help("<pattern-file>");
 
-    auto result = options.parse(argc, argv);
+        auto result = options.parse(argc, argv);
 
-    std::string patternName(*++argv);
-
-    bool wrappedGrid = result["wrapped"].as<bool>();
-    std::clog << "Setting " << (wrappedGrid ? "infinite" : "bounded") << " grid" << std::endl;
-
-    bool randomSoup = false;
-    if (result.count("random") != 0) {
-        std::clog << "Random soup requested" << std::endl;
-        randomSoup = result["random"].as<bool>();
-        std::stringstream ss;
-        ss << "soup_" << getTimestamp();
-        patternName = ss.str();
-    }
-
-    GOLConfig golConfig;
-    auto gridTiling = !randomSoup ? generateGridFromPatternFile(patternName, golConfig, wrappedGrid)
-                                  : generateRandomSoup(golConfig, wrappedGrid);
-
-    if (!gridTiling.has_value()) {
-        EXIT_FAILURE;
-    }
-
-    auto& [conwayGrid, tileSize] = gridTiling.value();
-    golConfig.setTileSize(tileSize);
-    GameOfLife game(patternName, conwayGrid, golConfig.getScreenSize(), tileSize, golConfig);
-
-    auto* gameWindow = game.getWindow();
-    game.render();
-    sf::sleep(sf::seconds(1.0f));
-
-    while (!gameWindow->isDone()) {
-        game.handleInput();
-
-        sf::Time lifeTick{sf::seconds(golConfig.getLifeTick())};
-        if (game.getElapsed() >= lifeTick) {
-            game.update();
-            game.render();
-            game.restartClock();
+        // Handle help request
+        if (result.count("help") || argc == 1) {
+            printUsage();
+            return (argc == 1) ? EXIT_FAILURE : EXIT_SUCCESS;
         }
+
+        bool wrappedGrid = result["wrapped"].as<bool>();
+        std::clog << "Setting " << (wrappedGrid ? "infinite" : "bounded") << " grid" << std::endl;
+
+        bool randomSoup = result["random"].as<bool>();
+        std::string patternName;
+
+        if (randomSoup) {
+            std::clog << "Random soup requested" << std::endl;
+            std::stringstream ss;
+            ss << "soup_" << getTimestamp();
+            patternName = ss.str();
+        } else {
+            // Check if pattern file was provided
+            if (!result.count("pattern")) {
+                std::cerr << "Error: No pattern file specified and --random not used\n"
+                          << std::endl;
+                printUsage();
+                return EXIT_FAILURE;
+            }
+
+            patternName = result["pattern"].as<std::string>();
+        }
+
+        GOLConfig golConfig;
+        auto gridTiling = !randomSoup
+                ? generateGridFromPatternFile(patternName, golConfig, wrappedGrid)
+                : generateRandomSoup(golConfig, wrappedGrid);
+
+        if (!gridTiling.has_value()) {
+            std::cerr << "Failed to initialize game grid" << std::endl;
+            return EXIT_FAILURE;
+        }
+
+        auto& [conwayGrid, tileSize] = gridTiling.value();
+        golConfig.setTileSize(tileSize);
+        GameOfLife game(patternName, conwayGrid, golConfig.getScreenSize(), tileSize, golConfig);
+
+        auto* gameWindow = game.getWindow();
+        game.render();
+        sf::sleep({sf::seconds(1.0)});
+
+        while (!gameWindow->isDone()) {
+            game.handleInput();
+
+            sf::Time lifeTick{sf::seconds(golConfig.getLifeTick())};
+            if (game.getElapsed() >= lifeTick) {
+                game.update();
+                game.render();
+                game.restartClock();
+            }
+        }
+
+        return EXIT_SUCCESS;
+
+    } catch (const cxxopts::exceptions::exception& e) {
+        std::cerr << "Error parsing options: " << e.what() << "\n" << std::endl;
+        printUsage();
+        return EXIT_FAILURE;
+    } catch (const std::exception& e) {
+        std::cerr << "Error: " << e.what() << std::endl;
+        return EXIT_FAILURE;
     }
 }

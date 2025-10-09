@@ -12,6 +12,29 @@ C++ implementation of [Conway's Game of Life](https://conwaylife.com/wiki/Conway
 - Cell colors can be configured via JSON
 - Display parameters (screen size, tile size) can be configured via JSON.
 
+### Unique Cell Transition Colorization
+
+Unlike traditional Game of Life implementations that only distinguish between alive (on) and dead (off) cells, this implementation visualizes **how and why** cells change state. Each cell is colored based on its transition type:
+
+| State | Color | Meaning |
+|-------|-------|---------|
+| **CELL_ASLEEP** | Blue (`0x003F5C`) | Dead cell (0-1 neighbors) |
+| **CELL_LONELY** | Purple (`0x58508D`) | Just died from underpopulation (≤1 neighbor) |
+| **CELL_CHOKED** | Pink (`0xBC5090`) | Just died from overpopulation (≥4 neighbors) |
+| **CELL_LIVING** | Orange (`0xFFA600`) | Surviving cell (2-3 neighbors) |
+| **CELL_REBORN** | Red (`0xFF6361`) | Just born from reproduction (exactly 3 neighbors) |
+
+This creates a rich visualization where you can see:
+- **Purple halos** around collapsing patterns (cells starving)
+- **Pink flashes** in overcrowded regions (cells suffocating)
+- **Red bursts** where new life emerges
+- **Orange cores** in stable structures
+- **Blue backgrounds** in lifeless regions
+
+The colors are fully configurable via `gol_config.json`. This approach transforms the classic binary view into a temporal heat map of population dynamics.
+
+**Example:** In the pulsar oscillator (shown below), you can see the characteristic purple underpopulation deaths and red births that create the pulsing rhythm, rather than just cells turning on and off.
+
 ![Colorized Pulsar pattern](pulsar.png "Colorized pulsar")
 
 ## Dependencies
