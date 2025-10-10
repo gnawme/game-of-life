@@ -4,7 +4,7 @@ C++ implementation of [Conway's Game of Life](https://conwaylife.com/wiki/Conway
 ## Features
 
 - Implemented using [SFML 3.0](https://github.com/SFML/SFML), which is standardized on C++17.
-- This version uses `std::filesystem`, which is available in C++17 through `std=c++20a` on gcc.
+- Modernized with C++20 features including `std::filesystem` for robust path handling.
 - Reads [plaintext](https://conwaylife.com/wiki/Plaintext) and [RLE](https://conwaylife.com/wiki/Run_Length_Encoded) pattern formats.
 - Supports finite plane or 'infinite' grids via the `--wrapped` command line option.
 - Supports random [soups](https://conwaylife.com/wiki/Soup#Soup_search) via the `--random` command line option.
@@ -65,30 +65,161 @@ sudo apt install pipx
 pipx ensurepath
 pipx install conan
 
-# macOS
-brew install conan
-conan profile detect
-
 # Install SFML build dependencies
 sudo apt install libx11-dev libxrandr-dev libxcursor-dev libxi-dev \
                  libudev-dev libgl1-mesa-dev libfreetype6-dev \
                  libopenal-dev libvorbis-dev libflac-dev
+```
 
+**macOS:**
+```bash
+# Install Homebrew (if not already installed)
+/bin/bash -c "$(curl -fsSL https://raw.githubusercontent.com/Homebrew/install/HEAD/install.sh)"
+
+# Install Conan
+brew install conan
+```
+
+### Build Instructions
+
+```bash
 # 1. Clone the repository
 git clone <repository-url>
 cd game-of-life
 
-# 2. Install Conan dependencies
-conan install . --output-folder=build --build=missing
+# 2. Create Conan profile (one-time setup)
+conan profile detect
 
-# 3. Configure CMake with Conan toolchain
-cmake -B build -DCMAKE_TOOLCHAIN_FILE=build/conan_toolchain.cmake -DCMAKE_BUILD_TYPE=Release
+# 3. Install dependencies and generate build files
+conan install . --build=missing
 
-# 4. Build the project
-cmake --build build -j$(nproc)
+# 4. Configure with CMake presets
+cmake --preset conan-release
 
-# 5. Run the executable
-./build/game_of_life [options]
+# 5. Build the project
+cmake --build --preset conan-release
 
-# 6. Run tests
-./build/gol_unit_tests
+# 6. Run the executable
+./build/Release/game_of_life --help
+```
+
+### Running Tests
+
+```bash
+./build/Release/gol_unit_tests
+```
+
+### Development Build
+
+For development with debug symbols:
+
+```bash
+# Install dependencies for debug build
+conan install . --build=missing -s build_type=Debug
+
+# Configure and build
+cmake --preset conan-debug
+cmake --build --preset conan-debug
+
+# Run
+./build/Debug/game_of_life [options]
+```
+
+## Usage
+
+```
+Conway's Game of Life - Modern C++ Implementation with SFML Graphics
+
+USAGE:
+  game_of_life <pattern-file> [OPTIONS]
+  game_of_life --random [OPTIONS]
+
+ARGUMENTS:
+  <pattern-file>    Path to a pattern file (.cells or .rle format)
+                    Example: ./patterns/glider.cells
+
+OPTIONS:
+  --random          Generate a random soup instead of loading a pattern
+  --wrapped         Enable wrapped/toroidal grid (infinite plane)
+                    Default: bounded grid with edges
+  -h, --help        Display help message and exit
+
+INTERACTIVE CONTROLS:
+  F5                Toggle fullscreen mode
+  ESC               Exit the simulation
+
+EXAMPLES:
+  # Run with a pattern file
+  game_of_life patterns/glider.cells
+
+  # Run with wrapped grid (infinite plane)
+  game_of_life patterns/gosper_glider_gun.rle --wrapped
+
+  # Generate a random soup
+  game_of_life --random
+
+  # Random soup with wrapped grid
+  game_of_life --random --wrapped
+```
+
+## Configuration
+
+Display parameters and cell colors can be customized via `gol_config.json` in the application directory.
+
+Example configuration:
+```json
+{
+  "displayParams": {
+    "widthInPixels": "1280",
+    "heightInPixels": "720",
+    "tileSize": "16.0"
+  },
+  "stateColors": {
+    "colorAsleep": "0x003F5CFF",
+    "colorLonely": "0x58508DFF",
+    "colorChoked": "0xBC5090FF",
+    "colorLiving": "0xFFA600FF",
+    "colorReborn": "0xFF6361FF"
+  },
+  "lifeTickInSecs": "0.5"
+}
+```
+
+## Pattern Files
+
+This implementation supports two standard formats:
+
+- **Plaintext (.cells)**: [Format specification](https://conwaylife.com/wiki/Plaintext)
+- **RLE (.rle)**: [Format specification](https://conwaylife.com/wiki/Run_Length_Encoded)
+
+Pattern files can be found at [LifeWiki](https://conwaylife.com/wiki/Main_Page).
+
+## Project Structure
+
+```
+game-of-life/
+├── CMakeLists.txt              # Root CMake configuration
+├── conanfile.py                # Conan dependency management
+├── gol_config.json             # Runtime configuration
+├── src/                        # Source files
+│   ├── main.cpp
+│   ├── GameOfLife.cpp
+│   ├── Window.cpp
+│   ├── GOLFile.cpp
+│   ├── GOLConfig.cpp
+│   ├── ConwayGrid.cpp
+│   └── MooreNeighbor.cpp
+├── include/                    # Header files
+├── tests/                      # Unit tests
+└── patterns/                   # Sample pattern files
+```
+
+## License
+
+MIT License - see source files for full license text.
+
+## Acknowledgments
+
+- [Conway's Game of Life](https://en.wikipedia.org/wiki/Conway%27s_Game_of_Life) - John Horton Conway
+- [SFML](https://www.sfml-dev.org/) - Simple and Fast Multimedia Library
+- [LifeWiki](https://conwaylife.com/wiki/) - Pattern library and documentation
