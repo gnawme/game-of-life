@@ -23,6 +23,7 @@
 #include "ConwayDefs.h"
 #include "GOLFile.h"
 
+#include <cstddef>
 #include <effolkronium/random.hpp>
 #include <iterator>
 #include <string>
@@ -48,7 +49,7 @@ ConwayGrid::ConwayGrid(ScreenSize screenSize, bool wrapped)
     }
 
     populatePendingGrid();
-    m_snapshot.reserve(m_width * m_height);
+    m_snapshot.reserve(static_cast<std::size_t>(m_width * m_height));
 }
 
 ///
@@ -61,7 +62,7 @@ ConwayGrid::ConwayGrid(PatternArray patternArray, ScreenSize padding, bool wrapp
 
     fitGridToWindow();
     populatePendingGrid();
-    m_snapshot.reserve(m_width * m_height);
+    m_snapshot.reserve(static_cast<std::size_t>(m_width * m_height));
 }
 
 ///

@@ -42,7 +42,7 @@ public:
             ConwayGrid grid,
             ScreenSize screenSize,
             float tileSize,
-            GOLConfig golConfig);
+            const GOLConfig& golConfig);
     ~GameOfLife();
 
     void handleInput();
@@ -65,13 +65,13 @@ private:
 
     void updateGrid();
 
-    Window m_window{};
+    Window m_window;
     ConwayGrid m_conwayGrid;
     float m_tileSize{16.0};
     GOLConfig m_golConfig;
 
     sf::Clock m_clock{};
-    sf::Time m_elapsed{};
+    sf::Time m_elapsed;
     RectangleShapeArray m_cellRectangles;
 };
 }  // namespace gol

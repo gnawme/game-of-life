@@ -50,10 +50,10 @@ private:
 
     int m_width{10};
     int m_height{10};
-    ScreenSize m_padding{};
+    ScreenSize m_padding;
     bool m_wrapped{false};
-    PatternArray m_patternArray{};
-    CellArray m_pending{};
-    CellArray m_snapshot{};
+    PatternArray m_patternArray;
+    CellArray m_pending;
+    CellArray m_snapshot;
 };
 }  // namespace gol

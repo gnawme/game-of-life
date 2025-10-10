@@ -43,11 +43,11 @@ GameOfLife::GameOfLife(
         ConwayGrid grid,
         ScreenSize screenSize,
         float tileSize,
-        GOLConfig golConfig)
+        const GOLConfig& golConfig)
     : m_window(patternName, sf::Vector2u(screenSize.first, screenSize.second))
     , m_conwayGrid(std::move(grid))
     , m_tileSize(tileSize)
-    , m_golConfig(std::move(golConfig)) {
+    , m_golConfig(golConfig) {
     restartClock();
     generateGrid();
 }

@@ -88,7 +88,7 @@ private:
     void readLifeTick();
     void readStateColors();
 
-    json m_json{};
+    json m_json;
 
     std::uint32_t m_colorAsleep{COLOR_ASLEEP};
     std::uint32_t m_colorLonely{COLOR_LONELY};

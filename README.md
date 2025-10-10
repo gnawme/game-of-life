@@ -4,6 +4,7 @@ C++ implementation of [Conway's Game of Life](https://conwaylife.com/wiki/Conway
 ## Features
 
 - Implemented using [SFML 3.0](https://github.com/SFML/SFML), which is standardized on C++17.
+- This version uses `std::filesystem`, which is available in C++17 through `std=c++20a` on gcc.
 - Reads [plaintext](https://conwaylife.com/wiki/Plaintext) and [RLE](https://conwaylife.com/wiki/Run_Length_Encoded) pattern formats.
 - Supports finite plane or 'infinite' grids via the `--wrapped` command line option.
 - Supports random [soups](https://conwaylife.com/wiki/Soup#Soup_search) via the `--random` command line option.
@@ -63,6 +64,10 @@ sudo apt install cmake build-essential
 sudo apt install pipx
 pipx ensurepath
 pipx install conan
+
+# macOS
+brew install conan
+conan profile detect
 
 # Install SFML build dependencies
 sudo apt install libx11-dev libxrandr-dev libxcursor-dev libxi-dev \

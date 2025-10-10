@@ -59,7 +59,7 @@ private:
     PatternArray readPlaintextPatternFile(const std::string& filename);
     PatternArray readRLEPatternFile(const std::string& filename);
 
-    std::string m_filename{};
+    std::string m_filename;
     std::string m_extension{CELLS};
 };
 

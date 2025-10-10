@@ -51,7 +51,7 @@ private:
     void create();
     void destroy();
 
-    sf::RenderWindow m_window{};
+    sf::RenderWindow m_window;
     sf::Vector2u m_windowSize{640, 640};
     sf::String m_windowTitle{"Window"};
     bool m_isDone{false};
