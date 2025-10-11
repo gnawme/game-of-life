@@ -25,14 +25,19 @@
 #include "GOLConfig.h"
 #include "GOLFile.h"
 #include "MooreNeighbor.h"
+#include "TestConfig.h"
 
 #include <gtest/gtest.h>
+
+#include <filesystem>
 
 using namespace gol;
 
 struct GOLTests : public ::testing::Test {
     void SetUp() override {
-        myPatternArray = myGOLFile.readPatternFile("../block.cells");
+        namespace fs = std::filesystem;
+        fs::path testDataPath = fs::path(TEST_DATA_DIR) / "block.cells";
+        myPatternArray = myGOLFile.readPatternFile(testDataPath.string());
     }
 
     GOLFile myGOLFile;

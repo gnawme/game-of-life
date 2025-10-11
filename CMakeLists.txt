@@ -5,7 +5,7 @@ set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
 set(CMAKE_CXX_STANDARD 20)
 set(CMAKE_CXX_STANDARD_REQUIRED ON)
 
-# Conan integration - set these before find_package calls
+# Conan integration
 list(APPEND CMAKE_PREFIX_PATH ${CMAKE_BINARY_DIR})
 list(APPEND CMAKE_MODULE_PATH ${CMAKE_BINARY_DIR})
 
@@ -67,6 +67,16 @@ set(GAME_SOURCE
     GOLConfig.h
 )
 
+# Set the path to test data (patterns directory)
+set(TEST_DATA_DIR "${CMAKE_SOURCE_DIR}/patterns")
+
+# Generate TestConfig.h from template
+configure_file(
+    ${CMAKE_SOURCE_DIR}/tests/TestConfig.h.in
+    ${CMAKE_BINARY_DIR}/generated/TestConfig.h
+    @ONLY
+)
+
 # Unit tests executable
 add_executable(gol_unit_tests GOLTests.cpp ${CONWAY_SOURCE})
 target_link_libraries(gol_unit_tests
@@ -77,6 +87,8 @@ target_link_libraries(gol_unit_tests
 )
 target_include_directories(gol_unit_tests
     PRIVATE
+    ${CMAKE_BINARY_DIR}/generated  # For test_config.h
+    ${CMAKE_CURRENT_SOURCE_DIR}/include
     ${effolkronium_random_SOURCE_DIR}/include
 )
 
