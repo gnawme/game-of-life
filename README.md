@@ -103,6 +103,14 @@ cmake --build --preset conan-release
 ./build/Release/game_of_life --help
 ```
 
+### macOS Build Notes
+
+Due to legacy CMake requirements in some dependencies, macOS builds require an additional flag:
+```bash
+# macOS: Configure with policy flag
+cmake --preset conan-release -DCMAKE_POLICY_VERSION_MINIMUM=3.5
+cmake --build --preset conan-release
+
 ### Running Tests
 
 ```bash
