@@ -90,17 +90,34 @@ cd game-of-life
 # 2. Create Conan profile (one-time setup)
 conan profile detect
 
-# 3. Install dependencies and generate build files
-conan install . --build=missing
+# 3. Build the project
+./build.sh
 
-# 4. Configure with CMake presets
-cmake --preset conan-release
+# 4. Run the executable
+./build/game_of_life --help
+```
 
-# 5. Build the project
-cmake --build --preset conan-release
+### Build Script Options
 
-# 6. Run the executable
-./build/Release/game_of_life --help
+The `build.sh` script supports several options:
+
+```bash
+# Build in debug mode
+./build.sh --debug
+
+# Use a custom build directory
+./build.sh --build-dir my-build
+
+# Specify number of parallel jobs
+./build.sh --jobs 8
+# or
+./build.sh -j 8
+
+# Clean build directory before building
+./build.sh --clean
+
+# Show help
+./build.sh --help
 ```
 
 ### macOS Build Notes
@@ -114,7 +131,7 @@ cmake --build --preset conan-release
 ### Running Tests
 
 ```bash
-./build/Release/gol_unit_tests
+./build/gol_unit_tests
 ```
 
 ### Development Build
@@ -122,15 +139,11 @@ cmake --build --preset conan-release
 For development with debug symbols:
 
 ```bash
-# Install dependencies for debug build
-conan install . --build=missing -s build_type=Debug
-
-# Configure and build
-cmake --preset conan-debug
-cmake --build --preset conan-debug
+# Build in debug mode
+./build.sh --debug
 
 # Run
-./build/Debug/game_of_life [options]
+./build/game_of_life [options]
 ```
 
 ## Usage
