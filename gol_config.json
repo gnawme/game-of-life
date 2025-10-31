@@ -1,15 +1,16 @@
 {
   "stateColors": {
-    "colorAsleep" : "0x003F5CFF",
-    "colorLonely" : "0x58508DFF",
-    "colorChoked" : "0xBC5090FF",
-    "colorLiving" : "0xFFA600FF",
-    "colorReborn" : "0xFF6361FF"
+    "colorAsleep": "0x003F5CFF",
+    "colorLonely": "0x58508DFF",
+    "colorChoked": "0xBC5090FF",
+    "colorLiving": "0xFFA600FF",
+    "colorReborn": "0xFF6361FF"
   },
   "displayParams": {
     "widthInPixels": "1280",
     "heightInPixels": "720",
     "tileSize": "16.0"
   },
-  "lifeTickInSecs": "0.5"
+  "lifeTickInSecs": "0.5",
+  "startupDelayInSecs": "3.0"
 }

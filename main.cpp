@@ -233,7 +233,7 @@ int main(int argc, char** argv) {
 
         auto* gameWindow = game.getWindow();
         game.render();
-        sf::sleep({sf::seconds(1.0)});
+        sf::sleep({sf::seconds(golConfig.getStartupDelay())});
 
         while (!gameWindow->isDone()) {
             game.handleInput();

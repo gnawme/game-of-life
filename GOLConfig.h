@@ -47,6 +47,7 @@ static constexpr ScreenSize GOL_TILING_720P{
         static_cast<unsigned int>(GOL_SCREEN_720P.second / GOL_TILE_SIZE)};
 
 static constexpr float GOL_LIFE_TICK(0.5);
+static constexpr float GOL_STARTUP_DELAY(3.0);
 
 ///
 class GOLConfig {
@@ -70,6 +71,10 @@ public:
         return m_screenTiling;
     }
 
+    float getStartupDelay() const {
+        return m_startupDelay;
+    }
+
     float getTileSize() const {
         return m_tileSize;
     }
@@ -86,6 +91,7 @@ private:
     float convertTileSize(const char* jsonKey);
     void readDisplayParams();
     void readLifeTick();
+    void readStartupDelay();
     void readStateColors();
 
     json m_json;
@@ -107,5 +113,6 @@ private:
     float m_tileSize{GOL_TILE_SIZE};
     ScreenSize m_screenTiling{GOL_TILING_720P};
     float m_lifeTick{GOL_LIFE_TICK};
+    float m_startupDelay{GOL_STARTUP_DELAY};
 };
 }  // namespace gol

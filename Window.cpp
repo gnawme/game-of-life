@@ -27,7 +27,9 @@
 #include "SFML/Window/VideoMode.hpp"
 #include "SFML/Window/WindowEnums.hpp"
 #include <optional>
+#include <stdexcept>
 #include <string>
+#include <vector>
 
 namespace gol {
 ///
@@ -50,7 +52,49 @@ Window::~Window() {
 ///
 void Window::create() {
     auto state = (m_isFullscreen ? sf::State::Fullscreen : sf::State::Windowed);
-    m_window.create(sf::VideoMode({m_windowSize.x, m_windowSize.y}), m_windowTitle, state);
+
+    // Try multiple OpenGL context configurations in order of preference
+    std::vector<sf::ContextSettings> settingsToTry;
+
+    // Option 1: Let SFML choose (original behavior)
+    settingsToTry.push_back(sf::ContextSettings());
+
+    // Option 2: OpenGL 2.1 (maximum compatibility)
+    sf::ContextSettings settings21;
+    settings21.majorVersion = 2;
+    settings21.minorVersion = 1;
+    settings21.attributeFlags = sf::ContextSettings::Default;
+    settingsToTry.push_back(settings21);
+
+    // Option 3: OpenGL 3.0 compatibility profile
+    sf::ContextSettings settings30;
+    settings30.majorVersion = 3;
+    settings30.minorVersion = 0;
+    settings30.attributeFlags = sf::ContextSettings::Default;
+    settingsToTry.push_back(settings30);
+
+    // Try each configuration
+    bool created = false;
+    for (const auto& settings : settingsToTry) {
+        try {
+            m_window.create(
+                    sf::VideoMode({m_windowSize.x, m_windowSize.y}),
+                    m_windowTitle,
+                    state,
+                    settings);
+            if (m_window.isOpen()) {
+                created = true;
+                break;
+            }
+        } catch (...) {
+            // Try next configuration
+            continue;
+        }
+    }
+
+    if (!created) {
+        throw std::runtime_error("Failed to create SFML window with any OpenGL configuration");
+    }
 }
 
 ///

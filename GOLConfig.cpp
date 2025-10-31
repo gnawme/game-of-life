@@ -58,6 +58,7 @@ GOLConfig::GOLConfig() {
     readStateColors();
     readDisplayParams();
     readLifeTick();
+    readStartupDelay();
 }
 
 /// \note PRIVATE
@@ -113,6 +114,7 @@ void GOLConfig::readDisplayParams() {
     computeScreenTiling();
 }
 
+/// \note PRIVATE
 void GOLConfig::readLifeTick() {
     auto inValue = m_json["lifeTickInSecs"];
     std::stringstream ss;
@@ -120,6 +122,16 @@ void GOLConfig::readLifeTick() {
 
     ss >> m_lifeTick;
     std::clog << "Life tick " << m_lifeTick << std::endl;
+}
+
+/// \note PRIVATE
+void GOLConfig::readStartupDelay() {
+    auto inValue = m_json["startupDelayInSecs"];
+    std::stringstream ss;
+    ss << inValue.get<std::string>();
+
+    ss >> m_startupDelay;
+    std::clog << "Startup delay " << m_startupDelay << std::endl;
 }
 
 /// \note PRIVATE
