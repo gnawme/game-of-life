@@ -77,7 +77,8 @@ echo ""
 echo -e "${GREEN}Step 2: Configuring CMake...${NC}"
 if ! cmake -B "${BUILD_DIR}" \
     -DCMAKE_TOOLCHAIN_FILE="${BUILD_DIR}/build/${BUILD_TYPE}/generators/conan_toolchain.cmake" \
-    -DCMAKE_BUILD_TYPE="${BUILD_TYPE}"; then
+    -DCMAKE_BUILD_TYPE="${BUILD_TYPE}" \
+    -DCMAKE_POLICY_VERSION_MINIMUM=3.5; then
     echo -e "${RED}CMake configuration failed!${NC}"
     exit 1
 fi
