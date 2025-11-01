@@ -15,11 +15,11 @@ include(FetchContent)
 
 set(BUILD_TESTING OFF CACHE BOOL "" FORCE)
 
-# Fetch SFML 3.0 (latest master)
+# Fetch SFML 3.0
 FetchContent_Declare(
     SFML
     GIT_REPOSITORY https://github.com/SFML/SFML.git
-    GIT_TAG        master
+    GIT_TAG        3.0.0
 )
 FetchContent_MakeAvailable(SFML)
 
