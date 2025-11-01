@@ -203,17 +203,42 @@ PatternArray GOLFile::readRLEPatternFile(const std::string& filename) {
             }
 
             if (line[0] == RLE_HEADER) {
-                std::vector<char> discard;
-                std::sscanf(
-                        line.c_str(), "x = %d, y = %d, rule = %s", &gridW, &gridH, discard.data());
+                // Use a fixed-size buffer for the rule string
+                char ruleBuffer[256] = {0};
+                std::sscanf(line.c_str(), "x = %d, y = %d, rule = %s", &gridW, &gridH, ruleBuffer);
+
+                // Validate dimensions
+                if (gridW <= 0 || gridH <= 0 || gridW > 10000 || gridH > 10000) {
+                    std::cerr << "Invalid RLE dimensions: x=" << gridW << " y=" << gridH
+                              << std::endl;
+                    return {};
+                }
                 break;
             }
+        }
+
+        // Verify we found a valid header
+        if (gridW <= 0 || gridH <= 0) {
+            std::cerr << "Failed to parse RLE header or invalid dimensions" << std::endl;
+            return {};
         }
 
         std::string commands(std::istreambuf_iterator<char>{pattern}, {});
         if (!commands.empty()) {
             commands.erase(
                     std::remove_if(commands.begin(), commands.end(), ::isspace), commands.end());
+        }
+
+        // Remove everything after '!' (end of data marker) to exclude comments
+        auto eodPos = commands.find('!');
+        if (eodPos != std::string::npos) {
+            commands = commands.substr(0, eodPos + 1);  // Keep the '!' character
+        }
+
+        // Check if we actually got RLE data
+        if (commands.empty()) {
+            std::cerr << "No RLE data found after header" << std::endl;
+            return {};
         }
 
         std::stringstream ss;
@@ -238,8 +263,11 @@ PatternArray GOLFile::readRLEPatternFile(const std::string& filename) {
                     cmdString.append(count, PTEXT_LIVE);
                     break;
                 case RLE_EOL:
-                    if (cmdString.length() < gridW) {
+                    // Pad or truncate to exact width
+                    if (cmdString.length() < static_cast<std::size_t>(gridW)) {
                         cmdString.append(gridW - cmdString.length(), PTEXT_DEAD);
+                    } else if (cmdString.length() > static_cast<std::size_t>(gridW)) {
+                        cmdString = cmdString.substr(0, gridW);
                     }
                     grid.push_back(cmdString);
                     cmdString = {};
@@ -251,13 +279,17 @@ PatternArray GOLFile::readRLEPatternFile(const std::string& filename) {
                     }
                     break;
                 case RLE_EOD:
-                    if (cmdString.length() < gridW) {
+                    // Pad or truncate to exact width
+                    if (cmdString.length() < static_cast<std::size_t>(gridW)) {
                         cmdString.append(gridW - cmdString.length(), PTEXT_DEAD);
+                    } else if (cmdString.length() > static_cast<std::size_t>(gridW)) {
+                        cmdString = cmdString.substr(0, gridW);
                     }
                     grid.push_back(cmdString);
 
-                    if (grid.size() != gridH) {
-                        for (auto i = 0; i < gridH - grid.size(); ++i) {
+                    if (grid.size() < static_cast<std::size_t>(gridH)) {
+                        std::size_t missingRows = gridH - grid.size();
+                        for (std::size_t i = 0; i < missingRows; ++i) {
                             grid.push_back(blancLine);
                         }
                     }
