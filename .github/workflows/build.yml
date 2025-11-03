@@ -1,0 +1,62 @@
+name: Build
+
+on:
+  push:
+    branches: [ main, master ]
+  pull_request:
+    branches: [ main, master ]
+
+jobs:
+  build-ubuntu:
+    runs-on: ubuntu-24.04
+    
+    steps:
+    - name: Checkout code
+      uses: actions/checkout@v4
+    
+    - name: Install system dependencies
+      run: |
+        sudo apt-get update
+        sudo apt-get install -y \
+          cmake \
+          build-essential \
+          pipx \
+          libx11-dev \
+          libxrandr-dev \
+          libxcursor-dev \
+          libxi-dev \
+          libudev-dev \
+          libgl1-mesa-dev \
+          libfreetype6-dev \
+          libopenal-dev \
+          libvorbis-dev \
+          libflac-dev \
+          libharfbuzz-dev
+    
+    - name: Install Conan
+      run: |
+        pipx install conan
+        pipx ensurepath
+        echo "$HOME/.local/bin" >> $GITHUB_PATH
+    
+    - name: Create Conan profile
+      run: conan profile detect --force
+    
+    - name: Build project
+      run: |
+        chmod +x build.sh
+        ./build.sh
+    
+    - name: Run tests
+      run: ./build/gol_unit_tests
+    
+    - name: Upload build artifacts
+      uses: actions/upload-artifact@v4
+      if: success()
+      with:
+        name: game-of-life-ubuntu
+        path: |
+          build/game_of_life
+          build/gol_unit_tests
+        retention-days: 7
+        
