@@ -4,7 +4,7 @@ C++ implementation of [Conway's Game of Life](https://conwaylife.com/wiki/Conway
 ## Features
 
 - Implemented using [SFML 3.0](https://github.com/SFML/SFML), which is standardized on C++17.
-- Modernized with C++20 features including `std::filesystem` for robust path handling.
+- Modernized with C++20 `std::filesystem` for robust path handling.
 - Reads [plaintext](https://conwaylife.com/wiki/Plaintext) and [RLE](https://conwaylife.com/wiki/Run_Length_Encoded) pattern formats.
 - Supports finite plane or 'infinite' grids via the `--wrapped` command line option.
 - Supports random [soups](https://conwaylife.com/wiki/Soup#Soup_search) via the `--random` command line option.
@@ -34,9 +34,30 @@ This creates a rich visualization where you can see:
 
 The colors are fully configurable via `gol_config.json`. This approach transforms the classic binary view into a temporal heat map of population dynamics.
 
-**Example:** In the pulsar oscillator (shown below), you can see the characteristic purple underpopulation deaths and red births that create the pulsing rhythm, rather than just cells turning on and off.
+## Gallery
 
-![Colorized Pulsar pattern](pulsar.png "Colorized pulsar")
+Watch Conway's Game of Life in action with colorized cell transitions that reveal the dynamics of population change:
+
+### Classic Patterns
+
+#### Pulsar
+![Pulsar Oscillator](animations/pulsar_1762203711.gif)
+
+The pulsar is a period-3 oscillator. Notice the **purple halos** (underpopulation deaths) and **red bursts** (births) that create its characteristic pulsing rhythm.
+
+#### Gosper Glider Gun
+![Gosper Glider Gun](animations/gosperglidergun_1762199622.gif)
+
+The first discovered pattern that grows indefinitely, continuously producing gliders. Watch the **orange stable core** while new gliders emerge in **red** at regular intervals.
+
+### Random Soup
+![Random Soup Evolution](animations/random_optimized_1762201433.gif)
+
+A randomly generated initial configuration. Observe the chaotic interactions with **pink flashes** (overcrowding deaths), **purple regions** (starvation), and eventual stabilization or extinction.
+
+---
+
+*All animations show the unique colorization scheme where cell colors indicate their transition state rather than just alive/dead status. See the [features section](#unique-cell-transition-colorization) for the complete color legend.*
 
 ## Dependencies
 
@@ -203,6 +224,7 @@ Example configuration:
     "colorReborn": "0xFF6361FF"
   },
   "lifeTickInSecs": "0.5"
+  "startupDelaySecs": "3.0"
 }
 ```
 
