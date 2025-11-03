@@ -233,7 +233,16 @@ int main(int argc, char** argv) {
 
         auto* gameWindow = game.getWindow();
         game.render();
-        sf::sleep({sf::seconds(golConfig.getStartupDelay())});
+
+        sf::Clock startupClock;
+        float startupDelay = golConfig.getStartupDelay();
+        while (startupClock.getElapsedTime().asSeconds() < startupDelay && !gameWindow->isDone()) {
+            game.handleInput();
+            game.render();
+
+            constexpr std::int32_t SPINNER_MS{16};
+            sf::sleep(sf::milliseconds(SPINNER_MS));
+        }
 
         while (!gameWindow->isDone()) {
             game.handleInput();

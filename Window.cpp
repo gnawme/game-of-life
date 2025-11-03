@@ -95,6 +95,14 @@ void Window::create() {
     if (!created) {
         throw std::runtime_error("Failed to create SFML window with any OpenGL configuration");
     }
+
+    // Center the window on screen (skip if fullscreen)
+    if (!m_isFullscreen) {
+        sf::VideoMode desktop = sf::VideoMode::getDesktopMode();
+        int x = (desktop.size.x - m_windowSize.x) / 2;
+        int y = (desktop.size.y - m_windowSize.y) / 2;
+        m_window.setPosition(sf::Vector2i(x, y));
+    }
 }
 
 ///
