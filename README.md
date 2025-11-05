@@ -1,6 +1,8 @@
 # game-of-life
 C++ implementation of [Conway's Game of Life](https://conwaylife.com/wiki/Conway%27s_Game_of_Life) with [SFML](https://www.sfml-dev.org/index.php) graphics.
 
+![Pulsar-like Oscillators](animations/osculator.png)
+
 ## Features
 
 - Implemented using [SFML 3.0](https://github.com/SFML/SFML), which is standardized on C++17.
@@ -41,17 +43,17 @@ Watch Conway's Game of Life in action with colorized cell transitions that revea
 ### Classic Patterns
 
 #### Pulsar
-![Pulsar Oscillator](animations/pulsar_1762203711.gif)
+![Pulsar Oscillator](animations/pulsar.gif)
 
 The pulsar is a period-3 oscillator. Notice the **purple halos** (underpopulation deaths) and **red bursts** (births) that create its characteristic pulsing rhythm.
 
 #### Gosper Glider Gun
-![Gosper Glider Gun](animations/gosperglidergun_1762199622.gif)
+![Gosper Glider Gun](animations/gosper_glider_gun.gif)
 
 The first discovered pattern that grows indefinitely, continuously producing gliders. Watch the **orange stable core** while new gliders emerge in **red** at regular intervals.
 
 ### Random Soup
-![Random Soup Evolution](animations/random_optimized_1762201433.gif)
+![Random Soup Evolution](animations/random_soup.gif)
 
 A randomly generated initial configuration. Observe the chaotic interactions with **pink flashes** (overcrowding deaths), **purple regions** (starvation), and eventual stabilization or extinction.
 
@@ -143,11 +145,7 @@ The `build.sh` script supports several options:
 
 ### macOS Build Notes
 
-Due to legacy CMake requirements in some dependencies, macOS builds require an additional flag:
-```bash
-# macOS: Configure with policy flag
-cmake --preset conan-release -DCMAKE_POLICY_VERSION_MINIMUM=3.5
-cmake --build --preset conan-release
+Due to legacy CMake requirements in some dependencies, the build script automatically handles this with the `-DCMAKE_POLICY_VERSION_MINIMUM=3.5` flag.
 
 ### Running Tests
 
@@ -223,7 +221,7 @@ Example configuration:
     "colorLiving": "0xFFA600FF",
     "colorReborn": "0xFF6361FF"
   },
-  "lifeTickInSecs": "0.5"
+  "lifeTickInSecs": "0.5",
   "startupDelaySecs": "3.0"
 }
 ```
@@ -243,18 +241,22 @@ Pattern files can be found at [LifeWiki](https://conwaylife.com/wiki/Main_Page).
 game-of-life/
 ├── CMakeLists.txt              # Root CMake configuration
 ├── conanfile.py                # Conan dependency management
+├── build.sh                    # Build automation script
 ├── gol_config.json             # Runtime configuration
-├── src/                        # Source files
-│   ├── main.cpp
-│   ├── GameOfLife.cpp
-│   ├── Window.cpp
-│   ├── GOLFile.cpp
-│   ├── GOLConfig.cpp
-│   ├── ConwayGrid.cpp
-│   └── MooreNeighbor.cpp
-├── include/                    # Header files
+├── main.cpp                    # Main entry point
+├── GameOfLife.cpp/.h           # Game engine
+├── Window.cpp/.h               # SFML window wrapper
+├── GOLFile.cpp/.h              # Pattern file parser
+├── GOLConfig.cpp/.h            # Configuration loader
+├── ConwayGrid.cpp/.h           # Grid data structure
+├── MooreNeighbor.cpp/.h        # Neighbor calculation
+├── ConwayDefs.h                # Type definitions
 ├── tests/                      # Unit tests
+│   └── ...
 └── patterns/                   # Sample pattern files
+    ├── glider.cells
+    ├── pulsar.cells
+    └── gosper_glider_gun.rle
 ```
 
 ## License
