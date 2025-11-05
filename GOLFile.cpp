@@ -262,6 +262,18 @@ PatternArray GOLFile::readRLEPatternFile(const std::string& filename) {
                 case RLE_LIVE:
                     cmdString.append(count, PTEXT_LIVE);
                     break;
+                // LifeHistory states - treat all as alive for standard Conway's Life
+                case 'A':
+                case 'B':
+                case 'C':
+                case 'D':
+                case 'E':
+                case 'F':
+                    cmdString.append(count, PTEXT_LIVE);
+                    break;
+                case '.':  // Explicit dead cell (used in LifeHistory)
+                    cmdString.append(count, PTEXT_DEAD);
+                    break;
                 case RLE_EOL:
                     // Pad or truncate to exact width
                     if (cmdString.length() < static_cast<std::size_t>(gridW)) {
