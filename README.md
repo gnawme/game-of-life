@@ -1,7 +1,7 @@
 # game-of-life
 C++ implementation of [Conway's Game of Life](https://conwaylife.com/wiki/Conway%27s_Game_of_Life) with [SFML](https://www.sfml-dev.org/index.php) graphics.
 
-![Pulsar-like Oscillators](animations/osculator.png)
+![Pulsar-like Oscillators](animations/osculators.png)
 
 ## Features
 
