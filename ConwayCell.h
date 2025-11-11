@@ -56,8 +56,8 @@ public:
     ///
     bool computeNextState(const CellArray& snapshot) {
         auto numLivingNeighbors = 0;
-        for (const auto& [row, col] : m_neighbors) {
-            auto cell = snapshot[col][row];
+        for (const auto& [col, row] : m_neighbors) {
+            auto cell = snapshot[row][col];
             if (cell.m_isAlive) {
                 ++numLivingNeighbors;
             }

@@ -143,7 +143,7 @@ void GOLConfig::readStateColors() {
     m_cellColors[CELL_LONELY] = m_colorLonely;
 
     m_colorChoked = convertStateColor("colorChoked");
-    m_cellColors[CELL_LONELY] = m_colorChoked;
+    m_cellColors[CELL_CHOKED] = m_colorChoked;
 
     m_colorLiving = convertStateColor("colorLiving");
     m_cellColors[CELL_LIVING] = m_colorLiving;
