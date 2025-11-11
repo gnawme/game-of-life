@@ -49,20 +49,27 @@ ConwayGrid::ConwayGrid(ScreenSize screenSize, bool wrapped)
     }
 
     populatePendingGrid();
-    m_snapshot.reserve(static_cast<std::size_t>(m_width * m_height));
+    m_snapshot.reserve(static_cast<std::size_t>(m_height));
 }
 
 ///
 ConwayGrid::ConwayGrid(PatternArray patternArray, ScreenSize padding, bool wrapped)
     : m_patternArray(std::move(patternArray))
-    , m_width(patternArray[0].length())
-    , m_height(patternArray.size())
     , m_padding(std::move(padding))
     , m_wrapped(wrapped) {
 
+    m_height = m_patternArray.size();
+    m_width = m_patternArray.empty() ? 0 : m_patternArray[0].length();
+
+    if (m_patternArray.empty() || m_width == 0) {
+        std::cerr << "Error: Empty pattern array provided to ConwayGrid" << std::endl;
+        return;
+    }
+
     fitGridToWindow();
     populatePendingGrid();
-    m_snapshot.reserve(static_cast<std::size_t>(m_width * m_height));
+
+    m_snapshot.reserve(static_cast<std::size_t>(m_height));
 }
 
 ///
@@ -151,7 +158,7 @@ void ConwayGrid::populatePendingGrid() {
     for (const auto& patternRow : m_patternArray) {
         auto col = 0;
         CellRow cellRow{};
-        cellRow.reserve(m_patternArray.size());
+        cellRow.reserve(m_width);
         for (const auto& patternCol : patternRow) {
             bool isAlive = patternCol == PTEXT_LIVE;
             if (isAlive) {

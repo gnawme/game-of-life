@@ -48,6 +48,11 @@ namespace {
 ///
 std::optional<float>
 fitPatternToScreenSize(const PatternArray& patternArray, GOLConfig& golConfig) {
+    if (patternArray.empty() || patternArray[0].empty()) {
+        std::cerr << "Error: Empty pattern array in fitPatternToScreenSize" << std::endl;
+        return std::nullopt;
+    }
+
     auto numCols = patternArray[0].length();
     auto numRows = patternArray.size();
 
