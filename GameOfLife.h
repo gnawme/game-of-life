@@ -58,6 +58,8 @@ public:
 private:
     void generateGrid();
 
+    void genCellColor(const ConwayCell& currentCell, sf::RectangleShape& cell);
+
     sf::RectangleShape genLifeCell(
             const ConwayCell& currentCell,
             const sf::Vector2f& cellPosition,
@@ -73,5 +75,6 @@ private:
     sf::Clock m_clock{};
     sf::Time m_elapsed;
     RectangleShapeArray m_cellRectangles;
+    bool m_classicMode{false};
 };
 }  // namespace gol

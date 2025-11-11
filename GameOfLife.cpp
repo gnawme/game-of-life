@@ -47,7 +47,8 @@ GameOfLife::GameOfLife(
     : m_window(patternName, sf::Vector2u(screenSize.first, screenSize.second))
     , m_conwayGrid(std::move(grid))
     , m_tileSize(tileSize)
-    , m_golConfig(golConfig) {
+    , m_golConfig(golConfig)
+    , m_classicMode(golConfig.isClassicMode()) {
     restartClock();
     generateGrid();
 }
@@ -127,18 +128,32 @@ void GameOfLife::generateGrid() {
 }
 
 /// \note PRIVATE
+void GameOfLife::genCellColor(const ConwayCell& currentCell, sf::RectangleShape& cell) {
+    auto pendingState = currentCell.getPendingState();
+    if (!m_classicMode) {
+        cell.setFillColor(sf::Color(m_golConfig.getCellColor(pendingState)));
+    } else {
+        if (pendingState == CellPending::CELL_LIVING || pendingState == CellPending::CELL_REBORN) {
+            cell.setFillColor(sf::Color(m_golConfig.getCellColor(CellPending::CELL_LIVING)));
+        } else {
+            cell.setFillColor(sf::Color(m_golConfig.getCellColor(CellPending::CELL_ASLEEP)));
+        }
+    }
+}
+
+/// \note PRIVATE
 sf::RectangleShape GameOfLife::genLifeCell(
         const ConwayCell& currentCell,
         const sf::Vector2f& cellPosition,
         const sf::Vector2f& cellSize) {
     sf::RectangleShape cell(cellSize);
     cell.setPosition(cellPosition);
-    cell.setFillColor(sf::Color(m_golConfig.getCellColor(currentCell.getPendingState())));
+    genCellColor(currentCell, cell);
 
     return cell;
 }
 
-///
+/// \note PRIVATE
 void GameOfLife::updateGrid() {
     CellArray cells = m_conwayGrid.getPendingGrid();
     auto row = 0;
@@ -146,8 +161,7 @@ void GameOfLife::updateGrid() {
         auto col = 0;
         for (auto& cell : cellRow) {
             auto currentCell = cells[row][col];
-            auto pendingState = currentCell.getPendingState();
-            cell.setFillColor(sf::Color(m_golConfig.getCellColor(pendingState)));
+            genCellColor(currentCell, cell);
             ++col;
         }
         ++row;

@@ -79,6 +79,14 @@ public:
         return m_tileSize;
     }
 
+    bool isClassicMode() const {
+        return m_classicMode;
+    }
+
+    void setClassicMode(bool classic) {
+        m_classicMode = classic;
+    }
+
     void setTileSize(float tileSize) {
         m_tileSize = tileSize;
         computeScreenTiling();
@@ -114,5 +122,6 @@ private:
     ScreenSize m_screenTiling{GOL_TILING_720P};
     float m_lifeTick{GOL_LIFE_TICK};
     float m_startupDelay{GOL_STARTUP_DELAY};
+    bool m_classicMode{false};
 };
 }  // namespace gol

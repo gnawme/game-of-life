@@ -148,6 +148,8 @@ void printUsage() {
     std::cout << "  --random          Generate a random soup instead of loading a pattern\n";
     std::cout << "  --wrapped         Enable wrapped/toroidal grid (infinite plane)\n";
     std::cout << "                    Default: bounded grid with edges\n";
+    std::cout << "  --classic         Use classic display (white/black only)\n";
+    std::cout << "                    Default: colorized transition display\n";
     std::cout << "  -h, --help        Display this help message and exit\n\n";
     std::cout << "INTERACTIVE CONTROLS:\n";
     std::cout << "  F5                Toggle fullscreen mode\n";
@@ -179,6 +181,9 @@ int main(int argc, char** argv) {
                 "wrapped",
                 "Set grid to wrap at its edges (infinite plane)",
                 cxxopts::value<bool>()->default_value("false"))(
+                "classic",
+                "Use classic color display (live/dead only)",
+                cxxopts::value<bool>()->default_value("false"))(
                 "random", "Create a random soup", cxxopts::value<bool>()->default_value("false"))(
                 "pattern", "Pattern file to load", cxxopts::value<std::string>())(
                 "positional", "Positional arguments", cxxopts::value<std::vector<std::string>>());
@@ -196,6 +201,8 @@ int main(int argc, char** argv) {
 
         bool wrappedGrid = result["wrapped"].as<bool>();
         std::clog << "Setting " << (wrappedGrid ? "infinite" : "bounded") << " grid" << std::endl;
+
+        bool classicMode = result["classic"].as<bool>();
 
         bool randomSoup = result["random"].as<bool>();
         std::string patternName;
@@ -226,6 +233,8 @@ int main(int argc, char** argv) {
             std::cerr << "Failed to initialize game grid" << std::endl;
             return EXIT_FAILURE;
         }
+
+        golConfig.setClassicMode(classicMode);
 
         auto& [conwayGrid, tileSize] = gridTiling.value();
         golConfig.setTileSize(tileSize);
