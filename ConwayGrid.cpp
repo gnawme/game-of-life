@@ -151,6 +151,7 @@ void ConwayGrid::populatePendingGrid() {
     for (const auto& patternRow : m_patternArray) {
         auto col = 0;
         CellRow cellRow{};
+        cellRow.reserve(m_patternArray.size());
         for (const auto& patternCol : patternRow) {
             bool isAlive = patternCol == PTEXT_LIVE;
             if (isAlive) {

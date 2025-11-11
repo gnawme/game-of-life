@@ -24,24 +24,39 @@
 
 namespace gol {
 
-///
+/// \note Moore Neighborhood implementation
+/// \see https://en.wikipedia.org/wiki/Moore_neighborhood
 NeighborArray mooreNeighborhood(int x, int y, int gridWidth, int gridHeight, bool wrapped) {
     NeighborArray neighbors;
-    for (auto i = -1; i <= 1; ++i) {
-        for (auto j = -1; j <= 1; ++j) {
-            if (i != 0 || j != 0) {
-                auto xCoord = x + i;
-                auto yCoord = y + j;
-                if (wrapped) {
-                    xCoord = (xCoord + gridWidth) % gridWidth;
-                    yCoord = (yCoord + gridHeight) % gridHeight;
-                }
-                if (xCoord >= 0 && xCoord < gridWidth && yCoord >= 0 && yCoord < gridHeight) {
+    neighbors.reserve(8);  // Preallocate for 8 neighbors
+
+    if (wrapped) {
+        // Wrapped grid: all 8 neighbors always valid
+        for (auto i = -1; i <= 1; ++i) {
+            for (auto j = -1; j <= 1; ++j) {
+                if (i != 0 || j != 0) {
+                    // Proper modulo for negative numbers
+                    auto xCoord = ((x + i) % gridWidth + gridWidth) % gridWidth;
+                    auto yCoord = ((y + j) % gridHeight + gridHeight) % gridHeight;
                     neighbors.emplace_back(xCoord, yCoord);
                 }
             }
         }
+    } else {
+        // Bounded grid: check bounds
+        for (auto i = -1; i <= 1; ++i) {
+            for (auto j = -1; j <= 1; ++j) {
+                if (i != 0 || j != 0) {
+                    auto xCoord = x + i;
+                    auto yCoord = y + j;
+                    if (xCoord >= 0 && xCoord < gridWidth && yCoord >= 0 && yCoord < gridHeight) {
+                        neighbors.emplace_back(xCoord, yCoord);
+                    }
+                }
+            }
+        }
     }
+
     return neighbors;
 }
 }  // namespace gol
