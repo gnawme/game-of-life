@@ -29,11 +29,11 @@
 #include "SFML/System/Sleep.hpp"
 #include "SFML/System/Time.hpp"
 
-#include <cstdint>
-#include <cstdlib>
 #include <cxxopts.hpp>
 
 #include <chrono>
+#include <cstdint>
+#include <cstdlib>
 #include <exception>
 #include <filesystem>
 #include <iostream>

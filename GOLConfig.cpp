@@ -21,12 +21,13 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 #include "GOLConfig.h"
+
 #include "ConwayDefs.h"
+
+#include <nlohmann/json.hpp>
 
 #include <cstdint>
 #include <filesystem>
-#include <nlohmann/json.hpp>
-
 #include <fstream>
 #include <iostream>
 #include <sstream>

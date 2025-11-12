@@ -20,21 +20,23 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 #include "ConwayGrid.h"
+
 #include "ConwayDefs.h"
 #include "GOLFile.h"
 
-#include <cstddef>
 #include <effolkronium/random.hpp>
-#include <iterator>
-#include <string>
-#include <utility>
-#include <vector>
-using namespace effolkronium;
 
 #include <algorithm>
 #include <cassert>
 #include <cmath>
+#include <cstddef>
 #include <iostream>
+#include <iterator>
+#include <string>
+#include <utility>
+#include <vector>
+
+using namespace effolkronium;
 
 namespace gol {
 
