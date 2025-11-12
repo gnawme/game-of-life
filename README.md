@@ -58,6 +58,8 @@ The first discovered pattern that grows indefinitely, continuously producing gli
 
 A randomly generated initial configuration. Observe the chaotic interactions with **pink flashes** (overcrowding deaths), **purple regions** (starvation), and eventual stabilization or extinction.
 
+Note also that this animation demonstrates the `--wrapped` option in action; the grid wraps around at all four edges.
+
 ---
 
 *All animations show the unique colorization scheme where cell colors indicate their transition state rather than just alive/dead status. See the [features section](#unique-cell-transition-colorization) for the complete color legend.*
