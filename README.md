@@ -44,17 +44,17 @@ Watch Conway's Game of Life in action with colorized cell transitions that revea
 ### Classic Patterns
 
 #### Pulsar
-![Pulsar Oscillator](animations/pulsar_1762203711.gif)
+![Pulsar Oscillator](animations/pulsar.gif)
 
 The pulsar is a period-3 oscillator. Notice the **purple halos** (underpopulation deaths) and **red bursts** (births) that create its characteristic pulsing rhythm.
 
 #### Gosper Glider Gun
-![Gosper Glider Gun](animations/gosperglidergun_1762199622.gif)
+![Gosper Glider Gun](animations/gosperglidergun.gif)
 
 The first discovered pattern that grows indefinitely, continuously producing gliders. Watch the **orange stable core** while new gliders emerge in **red** at regular intervals.
 
 ### Random Soup
-![Random Soup Evolution](animations/random_optimized_1762201433.gif)
+![Random Soup Evolution](animations/random_optimized.gif)
 
 A randomly generated initial configuration. Observe the chaotic interactions with **pink flashes** (overcrowding deaths), **purple regions** (starvation), and eventual stabilization or extinction.
 
