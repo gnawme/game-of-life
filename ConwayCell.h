@@ -36,21 +36,27 @@ public:
     ConwayCell() = delete;
 
     ///
-    ConwayCell(int cellX, int cellY, int gridW, int gridH, bool alive = false, bool wrapped = false)
-        : m_cellX(cellX)
-        , m_cellY(cellY)
+    ConwayCell(
+            int cellCol,
+            int cellRow,
+            int gridW,
+            int gridH,
+            bool alive = false,
+            bool wrapped = false)
+        : m_cellCol(cellCol)
+        , m_cellRow(cellRow)
         , m_gridW(gridW)
         , m_gridH(gridH)
         , m_isAlive(alive)
         , m_wrapped(wrapped)
         , m_pendingState(m_isAlive ? CELL_LIVING : CELL_ASLEEP) {
-        m_neighbors = mooreNeighborhood(cellX, cellY, gridW, gridH, wrapped);
+        m_neighbors = mooreNeighborhood(cellCol, cellRow, gridW, gridH, wrapped);
     }
 
     ///
     bool operator==(const ConwayCell& rhs) const {
-        return (m_cellX == rhs.m_cellX && m_cellY == rhs.m_cellY && m_isAlive == rhs.m_isAlive
-                && m_pendingState == rhs.m_pendingState);
+        return (m_cellCol == rhs.m_cellCol && m_cellRow == rhs.m_cellRow
+                && m_isAlive == rhs.m_isAlive && m_pendingState == rhs.m_pendingState);
     }
 
     ///
@@ -78,7 +84,7 @@ public:
     }
 
     std::pair<int, int> getRowCol() const {
-        return {m_cellX, m_cellY};
+        return {m_cellCol, m_cellRow};
     }
 
     ///
@@ -124,8 +130,8 @@ private:
         return pendingState;
     }
 
-    int m_cellX{0};
-    int m_cellY{0};
+    int m_cellCol{0};
+    int m_cellRow{0};
     int m_gridW{0};
     int m_gridH{0};
     bool m_isAlive{false};

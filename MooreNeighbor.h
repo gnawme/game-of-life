@@ -26,5 +26,6 @@
 namespace gol {
 using NeighborArray = std::vector<std::pair<int, int>>;
 
-NeighborArray mooreNeighborhood(int x, int y, int gridWidth, int gridHeight, bool wrapped = false);
+NeighborArray
+mooreNeighborhood(int col, int row, int gridWidth, int gridHeight, bool wrapped = false);
 }  // namespace gol

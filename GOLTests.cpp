@@ -43,8 +43,8 @@ struct GOLTests : public ::testing::Test {
     GOLFile myGOLFile;
     PatternArray myPatternArray;
 
-    static constexpr int CELL_X{1};
-    static constexpr int CELL_Y{1};
+    static constexpr int CELL_COL{1};
+    static constexpr int CELL_ROW{1};
     static constexpr int W3x3{3};
     static constexpr int H3x3{3};
     static constexpr int W2x2{2};
@@ -55,13 +55,13 @@ struct GOLTests : public ::testing::Test {
 
 ///
 TEST_F(GOLTests, MooreNeighborhoodOf3x3ShouldBe8) {
-    NeighborArray neighbors3x3 = mooreNeighborhood(CELL_X, CELL_Y, W3x3, H3x3);
+    NeighborArray neighbors3x3 = mooreNeighborhood(CELL_COL, CELL_ROW, W3x3, H3x3);
     EXPECT_EQ(neighbors3x3.size(), 8);
 }
 
 ///
 TEST_F(GOLTests, NeighborhoodOfCenterCellIsNotEmpty) {
-    ConwayCell myCCell(CELL_X, CELL_Y, W3x3, H3x3);
+    ConwayCell myCCell(CELL_COL, CELL_ROW, W3x3, H3x3);
     EXPECT_EQ(myCCell.getNumNeighbors(), 8);
 }
 
