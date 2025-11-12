@@ -23,6 +23,7 @@
 #include "Window.h"
 #include "SFML/Graphics/Drawable.hpp"
 #include "SFML/System/Vector2.hpp"
+#include "SFML/Window/ContextSettings.hpp"
 #include "SFML/Window/Keyboard.hpp"
 #include "SFML/Window/VideoMode.hpp"
 #include "SFML/Window/WindowEnums.hpp"
@@ -57,7 +58,7 @@ void Window::create() {
     std::vector<sf::ContextSettings> settingsToTry;
 
     // Option 1: Let SFML choose (original behavior)
-    settingsToTry.push_back(sf::ContextSettings());
+    settingsToTry.emplace_back();
 
     // Option 2: OpenGL 2.1 (maximum compatibility)
     sf::ContextSettings settings21;
