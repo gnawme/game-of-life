@@ -1,5 +1,6 @@
 # game-of-life
 [![Build Status](https://github.com/gnawme/game-of-life/actions/workflows/build.yml/badge.svg)](https://github.com/gnawme/game-of-life/actions/workflows/build.yml)
+![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)
 
 C++ implementation of [Conway's Game of Life](https://conwaylife.com/wiki/Conway%27s_Game_of_Life) with [SFML](https://www.sfml-dev.org/index.php) graphics.
 
